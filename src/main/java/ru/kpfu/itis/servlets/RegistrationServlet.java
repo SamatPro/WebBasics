@@ -6,6 +6,8 @@ import ru.kpfu.itis.repositories.UsersRepositoryImpl;
 import ru.kpfu.itis.services.UsersService;
 import ru.kpfu.itis.services.UsersServicesImpl;
 
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.UnavailableException;
 import javax.servlet.annotation.WebServlet;
@@ -27,18 +29,24 @@ public class RegistrationServlet extends HttpServlet {
     private final String PASSWORD = "postgres";
 
     @Override
-    public void init() throws ServletException {
-        try {
-            Class.forName("org.postgresql.Driver");
-            Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-
-            UsersRepository usersRepository = new UsersRepositoryImpl(connection);
-            usersService = new UsersServicesImpl(usersRepository);
-        } catch (SQLException | ClassNotFoundException e) {
-            System.out.println("Unavailable");
-            throw new UnavailableException("Сайт недоступен!!!");
-        }
+    public void init(ServletConfig config) throws ServletException {
+        ServletContext servletContext = config.getServletContext();
+        usersService = (UsersService) servletContext.getAttribute("usersService");
     }
+
+//    @Override
+//    public void init() throws ServletException {
+//        try {
+//            Class.forName("org.postgresql.Driver");
+//            Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+//
+//            UsersRepository usersRepository = new UsersRepositoryImpl(connection);
+//            usersService = new UsersServicesImpl(usersRepository);
+//        } catch (SQLException | ClassNotFoundException e) {
+//            System.out.println("Unavailable");
+//            throw new UnavailableException("Сайт недоступен!!!");
+//        }
+//    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

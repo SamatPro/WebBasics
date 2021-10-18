@@ -58,4 +58,5 @@ public class RegistrationServlet extends HttpServlet {
 
         response.sendRedirect("/signIn");
     }
+
 }

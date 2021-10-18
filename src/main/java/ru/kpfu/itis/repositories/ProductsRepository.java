@@ -7,4 +7,6 @@ import java.util.List;
 public interface ProductsRepository extends CrudRepository<Product> {
     List<Product> findFavouriteProductsByUserId(Long userId);
     List<Product> findProductsInBucketByUserId(Long userId);
+    void addProductToFavourite(Long userId, Long productId);
+    void addProductToBusket(Long userId, Long productId);
 }

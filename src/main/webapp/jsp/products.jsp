@@ -37,6 +37,18 @@
             <td>
                 <c:out value="${product.description}"/>
             </td>
+            <td>
+                <form action="/add-favourite?id=${product.id}" method="post"
+                      onsubmit="return isAuthenticated()">
+                    <input type="submit" value="Добавить в избранное">
+                </form>
+            </td>
+            <td>
+                <form action="/add-bucket?id=${product.id}" method="post"
+                      onsubmit="return isAuthenticated()">
+                    <input type="submit" value="Добавить в корзину">
+                </form>
+            </td>
         </tr>
     </c:forEach>
 
@@ -51,6 +63,18 @@
 
 
     <script>
+
+        function isAuthenticated(){
+            var docCookies = document.cookie;
+            var prefix = "auth=";
+            var begin = docCookies.indexOf("; " + prefix);
+            if (begin == -1) {
+                begin = docCookies.indexOf(prefix);
+                if (begin != 0) return false;
+            }
+            return true;
+        }
+
         function sendProduct(){
             let title = document.getElementById('title').value
             let cost = document.getElementById('cost').value

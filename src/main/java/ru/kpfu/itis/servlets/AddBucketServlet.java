@@ -1,6 +1,5 @@
 package ru.kpfu.itis.servlets;
 
-import ru.kpfu.itis.models.Product;
 import ru.kpfu.itis.repositories.AuthRepository;
 import ru.kpfu.itis.repositories.AuthRepositoryImpl;
 import ru.kpfu.itis.repositories.ProductsRepository;
@@ -8,9 +7,11 @@ import ru.kpfu.itis.repositories.ProductsRepositoryImpl;
 import ru.kpfu.itis.services.ProductsService;
 import ru.kpfu.itis.services.ProductsServiceImpl;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.UnavailableException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,10 +19,9 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.List;
 
-@WebServlet("/bucket")
-public class BucketServlet extends HttpServlet {
+@WebServlet("/add-bucket")
+public class AddBucketServlet extends HttpServlet {
     private ProductsService productsService;
 
     private final String URL = "jdbc:postgresql://localhost:5432/samat_hw";
@@ -29,17 +29,22 @@ public class BucketServlet extends HttpServlet {
     private final String PASSWORD = "databasepass";
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        Cookie[] cookies = req.getCookies();
+        Long productId = Long.parseLong(req.getParameter("id"));
+        Long userId = productsService.getUserID(cookies);
 
-        Long userId = productsService.getUserID(req.getCookies());
-        List<Product> products = productsService.findBucket(userId);
-        req.setAttribute("products", products);
-        req.getRequestDispatcher("/jsp/favourites.jsp").forward(req, resp);
+        if(userId == null) {
+            resp.sendRedirect("/signIn");
+            return;
+        }
 
+        productsService.addToBucket(userId, productId);
+        resp.sendRedirect("/products");
     }
 
     @Override
-    public void init() throws ServletException {
+    public void init(ServletConfig config) throws ServletException {
         try {
             Class.forName("org.postgresql.Driver");
             Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);

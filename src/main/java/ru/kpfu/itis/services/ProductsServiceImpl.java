@@ -8,7 +8,7 @@ import java.util.List;
 
 public class ProductsServiceImpl implements ProductsService {
 
-    private ProductsRepository productsRepository;
+    private final ProductsRepository productsRepository;
 
     public ProductsServiceImpl(ProductsRepository productsRepository) {
         this.productsRepository = productsRepository;
@@ -28,4 +28,19 @@ public class ProductsServiceImpl implements ProductsService {
     public List<Product> findAll() {
         return productsRepository.findAll();
     }
+
+    private boolean isInFav(Long userId, Long productId) {
+        return productsRepository.isInFav(userId, productId);
+    }
+
+    @Override
+    public void addToBucket(Long userId, Long productId) {
+        productsRepository.addToBucket(userId, productId);
+    }
+
+    @Override
+    public List<Product> user_bucket(Long userId) {
+        return productsRepository.findProductsInBucketByUserId(userId);
+    }
+
 }

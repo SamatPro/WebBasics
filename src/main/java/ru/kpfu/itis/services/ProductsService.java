@@ -7,5 +7,10 @@ import java.util.List;
 
 public interface ProductsService {
     void add(ProductForm productForm);
+
     List<Product> findAll();
+
+    void addToBucket(Long userId, Long productId);
+
+    List<Product> user_bucket(Long id);
 }

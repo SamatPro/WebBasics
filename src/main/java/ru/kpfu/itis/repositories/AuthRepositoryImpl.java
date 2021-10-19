@@ -8,7 +8,7 @@ import java.sql.*;
 import java.util.List;
 import java.util.Optional;
 
-public class AuthRepostoryImpl implements AuthRepository {
+public class AuthRepositoryImpl implements AuthRepository {
 
     private Connection connection;
 
@@ -16,7 +16,7 @@ public class AuthRepostoryImpl implements AuthRepository {
     private final String SQL_INSERT_AUTH = "INSERT INTO auth (user_id, cookie_value) VALUES (?, ?)";
 
 
-    public AuthRepostoryImpl(Connection connection) {
+    public AuthRepositoryImpl(Connection connection) {
         this.connection = connection;
     }
 

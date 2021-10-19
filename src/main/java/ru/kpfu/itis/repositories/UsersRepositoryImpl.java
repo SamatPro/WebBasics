@@ -11,7 +11,7 @@ public class UsersRepositoryImpl implements UsersRepository {
     private Connection connection;
 
     //language=sql
-    private final String SQL_INSERT_USER = "INSERT INTO users(first_name, last_name, login, password_hash) VALUES (?, ?, ?, ?)";
+    private final String SQL_INSERT_USER = "INSERT INTO users(first_name, last_name, login, password_hash) VALUES (?, ?, ?, ?) RETURNING id";
     private final String SQL_FIND_USER_BY_LOGIN = "SELECT * FROM users WHERE login=?;";
 
 
@@ -33,7 +33,7 @@ public class UsersRepositoryImpl implements UsersRepository {
     public User save(User user) {
         ResultSet resultSet = null;
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(SQL_INSERT_USER, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement preparedStatement = connection.prepareStatement(SQL_INSERT_USER);
             preparedStatement.setString(1, user.getFirstName());
             preparedStatement.setString(2, user.getLastName());
             preparedStatement.setString(3, user.getLogin());

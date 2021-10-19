@@ -51,7 +51,7 @@
             </td>
         </tr>
     </c:forEach>
-
+    </table>
 </div>
 
 <div id="form">

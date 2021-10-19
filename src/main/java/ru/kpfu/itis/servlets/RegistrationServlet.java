@@ -24,14 +24,15 @@ public class RegistrationServlet extends HttpServlet {
 
     private UsersService usersService;
 
-    private final String URL = "jdbc:postgresql://localhost:5435/postgres";
-    private final String USERNAME = "postgres";
-    private final String PASSWORD = "postgres";
+//    private final String URL = "jdbc:postgresql://localhost:5435/postgres";
+//    private final String USERNAME = "postgres";
+//    private final String PASSWORD = "postgres";
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         ServletContext servletContext = config.getServletContext();
         usersService = (UsersService) servletContext.getAttribute("usersService");
+//        config.getInitParameter("");
     }
 
 //    @Override

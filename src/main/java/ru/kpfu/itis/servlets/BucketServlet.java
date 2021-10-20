@@ -26,7 +26,6 @@ import java.util.Optional;
 
 @WebServlet("/bucket")
 public class BucketServlet extends HttpServlet {
-    //todo получить список продуктов из корзины пользователя и вывести на bucket.jsp
     private final String URL = "jdbc:postgresql://localhost:5432/test_project";
     private final String USERNAME = "postgres";
     private final String PASSWORD = "postgres";

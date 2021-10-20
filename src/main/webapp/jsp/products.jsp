@@ -42,6 +42,11 @@
                     <button>Добавить в корзину</button>
                 </form>
             </td>
+            <td>
+                <form action="<c:url value="/favourites?product_id=${product.id}"/>" method="post">
+                    <button>Добавить в избранное</button>
+                </form>
+            </td>
         </tr>
     </c:forEach>
 

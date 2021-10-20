@@ -3,7 +3,6 @@ package ru.kpfu.itis.repositories;
 import ru.kpfu.itis.mapper.RowMapper;
 import ru.kpfu.itis.models.Product;
 
-import javax.swing.text.html.HTMLDocument;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,14 +17,6 @@ public class ProductsRepositoryImpl implements ProductsRepository {
     private final String FIND_FAVOURITE_PRODUCTS_BY_USER_ID = "SELECT * FROM products p INNER JOIN favourite_products f ON p.id = f.product_id INNER JOIN users ON f.user_id=users.id WHERE user_id=?;";
     private final String FIND_PRODUCTS_IN_BUCKET_BY_USER_ID = "SELECT * FROM products p INNER JOIN bucket b ON p.id = b.product_id INNER JOIN users ON b.user_id=users.id WHERE user_id=?;";
     private final String FIND_ALL = "SELECT * FROM products;";
-    private final String ADD_PRODUCT_TO_FAVOURITES = "INSERT INTO favourite_products(user_id, product_id) VALUES (?, ?)";
-    private final String ADD_PRODUCT_TO_BUCKET = "INSERT INTO bucket(user_id, product_id) VALUES (?, ?)";
-    private final String FIND_FAVOURITE_BY_USER_AND_PRODUCT =
-            "SELECT * FROM favourite_products WHERE user_id=? and product_id=?";
-    private final String FIND_IN_BUCKET_BY_USER_AND_PRODUCT =
-            "SELECT * FROM bucket WHERE user_id=? and product_id=?";
-    private final String REMOVE_FROM_BUCKET = "DELETE FROM bucket WHERE user_id=? and product_id=?";
-    private final String REMOVE_FROM_FAVOURITES = "DELETE FROM favourite_products WHERE user_id=? and product_id=?";
 
     public ProductsRepositoryImpl(Connection connection) {
         this.connection = connection;
@@ -57,7 +48,7 @@ public class ProductsRepositoryImpl implements ProductsRepository {
             PreparedStatement preparedStatement = connection.prepareStatement(INSERT_PRODUCT, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1, product.getTitle());
             preparedStatement.setDouble(2, product.getCost());
-            preparedStatement.setString(3, product.getDescription());
+            preparedStatement.setString(3, product.getTitle());
             resultSet = preparedStatement.executeQuery();
             product = rowMapper.rowMap(resultSet);
             return product;
@@ -113,82 +104,6 @@ public class ProductsRepositoryImpl implements ProductsRepository {
 
         }
         return null;
-    }
-
-    @Override
-    public void addToFavourite(Long userId, Long productId) {
-        try{
-            PreparedStatement preparedStatement = connection.prepareStatement(ADD_PRODUCT_TO_FAVOURITES);
-            preparedStatement.setLong(1, userId);
-            preparedStatement.setLong(2, productId);
-            preparedStatement.execute();
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public boolean isAlreadyInFavourite(Long userId, Long productId){
-        try{
-            PreparedStatement statement = connection.prepareStatement(FIND_FAVOURITE_BY_USER_AND_PRODUCT);
-            statement.setLong(1, userId);
-            statement.setLong(2, productId);
-            ResultSet resultSet = statement.executeQuery();
-            return resultSet.next();
-        }catch (SQLException e){
-            e.printStackTrace();
-            return true;
-        }
-    }
-
-    @Override
-    public boolean isAlreadyInBucket(Long userId, Long productId) {
-        try{
-            PreparedStatement statement = connection.prepareStatement(FIND_IN_BUCKET_BY_USER_AND_PRODUCT);
-            statement.setLong(1, userId);
-            statement.setLong(2, productId);
-            ResultSet resultSet = statement.executeQuery();
-            return resultSet.next();
-        }catch (SQLException e){
-            e.printStackTrace();
-            return true;
-        }
-    }
-
-    @Override
-    public void addToBucket(Long userId, Long productId) {
-        try{
-            PreparedStatement preparedStatement = connection.prepareStatement(ADD_PRODUCT_TO_BUCKET);
-            preparedStatement.setLong(1, userId);
-            preparedStatement.setLong(2, productId);
-            preparedStatement.execute();
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void removeFromBucket(Long userId, Long productId) {
-        try{
-            PreparedStatement statement = connection.prepareStatement(REMOVE_FROM_BUCKET);
-            statement.setLong(1, userId);
-            statement.setLong(2, productId);
-            statement.execute();
-        }catch (SQLException e){
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    @Override
-    public void removeFromFavourites(Long userId, Long productId) {
-        try{
-            PreparedStatement statement = connection.prepareStatement(REMOVE_FROM_FAVOURITES);
-            statement.setLong(1, userId);
-            statement.setLong(2, productId);
-            statement.execute();
-        }catch (SQLException e){
-            throw new IllegalArgumentException(e);
-        }
     }
 
     private RowMapper<List<Product>> rowMapProducts = ((resultSet) -> {

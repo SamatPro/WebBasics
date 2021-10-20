@@ -11,6 +11,33 @@
     <title>Favourites</title>
 </head>
 <body>
+<div>
+    <table>
+        <h1>Favourites</h1>
+        <tr>
+            <th>ID           </th>
+            <th>Название     </th>
+            <th>Стоимость    </th>
+            <th>Описание     </th>
+        </tr>
+        <c:forEach items="${favourite}" var="product">
+            <tr>
+                <td>
+                    <c:out value="${product.id}"/>
+                </td>
+                <td>
+                    <c:out value="${product.title}"/>
+                </td>
+                <td>
+                    <c:out value="${product.cost}"/>
+                </td>
+                <td>
+                    <c:out value="${product.description}"/>
+                </td>
+            </tr>
+        </c:forEach>
+    </table>
+</div>
 
 </body>
 </html>

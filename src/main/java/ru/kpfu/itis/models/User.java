@@ -13,6 +13,22 @@ public class User {
 
     private List<Product> favourites;
 
+    public List<Product> getBucket() {
+        return bucket;
+    }
+
+    public void setBucket(List<Product> bucket) {
+        this.bucket = bucket;
+    }
+
+    public List<Product> getFavourites() {
+        return favourites;
+    }
+
+    public void setFavourites(List<Product> favourites) {
+        this.favourites = favourites;
+    }
+
     public Long getId() {
         return id;
     }

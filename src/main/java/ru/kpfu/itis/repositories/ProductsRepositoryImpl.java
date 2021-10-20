@@ -48,7 +48,7 @@ public class ProductsRepositoryImpl implements ProductsRepository {
             PreparedStatement preparedStatement = connection.prepareStatement(INSERT_PRODUCT, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1, product.getTitle());
             preparedStatement.setDouble(2, product.getCost());
-            preparedStatement.setString(3, product.getTitle());
+            preparedStatement.setString(3, product.getDescription());
             resultSet = preparedStatement.executeQuery();
             product = rowMapper.rowMap(resultSet);
             return product;

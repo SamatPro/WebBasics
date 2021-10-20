@@ -17,7 +17,8 @@
     <a href="/signIn">Вход</a>
     <a href="/products">Продукты</a>
     <a href="/profile">Профиль</a>
-
+    <a href="/favourites">Фавориты</a>
+    <a href="/bucket">Корзина</a>
 
 </body>
 </html>

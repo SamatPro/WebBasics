@@ -18,4 +18,7 @@ public interface ProductsService {
 
     List<Product> findFavourites(Long userId);
     List<Product> findBucket(Long userId);
+
+    void deleteFromFavourites(Long userId, Long productId);
+    void deleteFromBucket(Long userId, Long productId);
 }

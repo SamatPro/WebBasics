@@ -34,8 +34,16 @@ public class BucketServlet extends HttpServlet {
         Long userId = productsService.getUserID(req.getCookies());
         List<Product> products = productsService.findBucket(userId);
         req.setAttribute("products", products);
-        req.getRequestDispatcher("/jsp/favourites.jsp").forward(req, resp);
+        req.getRequestDispatcher("/jsp/bucket.jsp").forward(req, resp);
 
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        Long userId = productsService.getUserID(req.getCookies());
+        Long productId = Long.parseLong(req.getParameter("id"));
+
+        productsService.deleteFromBucket(userId, productId);
     }
 
     @Override

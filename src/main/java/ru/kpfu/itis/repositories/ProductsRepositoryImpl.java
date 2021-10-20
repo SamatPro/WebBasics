@@ -24,7 +24,8 @@ public class ProductsRepositoryImpl implements ProductsRepository {
             "SELECT * FROM favourite_products WHERE user_id=? and product_id=?";
     private final String FIND_IN_BUCKET_BY_USER_AND_PRODUCT =
             "SELECT * FROM bucket WHERE user_id=? and product_id=?";
-
+    private final String REMOVE_FROM_BUCKET = "DELETE FROM bucket WHERE user_id=? and product_id=?";
+    private final String REMOVE_FROM_FAVOURITES = "DELETE FROM favourite_products WHERE user_id=? and product_id=?";
 
     public ProductsRepositoryImpl(Connection connection) {
         this.connection = connection;
@@ -163,6 +164,30 @@ public class ProductsRepositoryImpl implements ProductsRepository {
             preparedStatement.execute();
         }catch (SQLException e){
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void removeFromBucket(Long userId, Long productId) {
+        try{
+            PreparedStatement statement = connection.prepareStatement(REMOVE_FROM_BUCKET);
+            statement.setLong(1, userId);
+            statement.setLong(2, productId);
+            statement.execute();
+        }catch (SQLException e){
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    @Override
+    public void removeFromFavourites(Long userId, Long productId) {
+        try{
+            PreparedStatement statement = connection.prepareStatement(REMOVE_FROM_FAVOURITES);
+            statement.setLong(1, userId);
+            statement.setLong(2, productId);
+            statement.execute();
+        }catch (SQLException e){
+            throw new IllegalArgumentException(e);
         }
     }
 

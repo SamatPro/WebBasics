@@ -54,7 +54,7 @@ public class ProductsServiceImpl implements ProductsService {
         for (Cookie cookie: cookies) {
             if(cookie.getName().equals("auth")){
                 Auth auth = authRepository.findByCookieValue(cookie.getValue());
-                return auth.getId();
+                return auth.getUser().getId();
             }
         }
         return null;
@@ -75,6 +75,19 @@ public class ProductsServiceImpl implements ProductsService {
     @Override
     public List<Product> findBucket(Long userId) {
         return productsRepository.findProductsInBucketByUserId(userId);
+    }
+
+    @Override
+    public void deleteFromBucket(Long userId, Long productId) {
+        if(isAlreadyInBucket(userId, productId)){
+            productsRepository.removeFromBucket(userId, productId);
+        }
+    }
+    @Override
+    public void deleteFromFavourites(Long userId, Long productId) {
+        if(isAlreadyInFavourite(userId, productId)){
+            productsRepository.removeFromFavourites(userId, productId);
+        }
     }
 
     private boolean isAlreadyInBucket(Long userId, Long productId) {

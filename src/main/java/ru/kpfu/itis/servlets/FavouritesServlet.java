@@ -40,6 +40,14 @@ public class FavouritesServlet extends HttpServlet {
     }
 
     @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        Long userId = productsService.getUserID(req.getCookies());
+        Long productId = Long.parseLong(req.getParameter("id"));
+
+        productsService.deleteFromFavourites(userId, productId);
+    }
+
+    @Override
     public void init() throws ServletException {
         try {
             Class.forName("org.postgresql.Driver");

@@ -38,8 +38,17 @@
                 <c:out value="${product.description}"/>
             </td>
         </tr>
+        <td>
+        <form action="/favourites?id=${product.id}" method="post">
+            <button type="submit">Добавить в избранное</button>
+        </form>
+    </td>
+        <td>
+            <form action="/bucket?id=${product.id}" method="post">
+                <button type="submit">Добавить в корзину</button>
+            </form>
+        </td>
     </c:forEach>
-
 </div>
 
 <div id="form">
@@ -51,6 +60,7 @@
 
 
     <script>
+
         function sendProduct(){
             let title = document.getElementById('title').value
             let cost = document.getElementById('cost').value

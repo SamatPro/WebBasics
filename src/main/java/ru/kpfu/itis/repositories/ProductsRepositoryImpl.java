@@ -17,6 +17,9 @@ public class ProductsRepositoryImpl implements ProductsRepository {
     private final String FIND_FAVOURITE_PRODUCTS_BY_USER_ID = "SELECT * FROM products p INNER JOIN favourite_products f ON p.id = f.product_id INNER JOIN users ON f.user_id=users.id WHERE user_id=?;";
     private final String FIND_PRODUCTS_IN_BUCKET_BY_USER_ID = "SELECT * FROM products p INNER JOIN bucket b ON p.id = b.product_id INNER JOIN users ON b.user_id=users.id WHERE user_id=?;";
     private final String FIND_ALL = "SELECT * FROM products;";
+    private final String INSERT_PRODUCT_BUCKET = "INSERT INTO bucket(user_id, product_id) VALUES (?,?)";
+    private final String INSERT_PRODUCT_FAVOURITE = "INSERT INTO favourite_products(user_id, product_id) VALUES(?, ?)";
+
 
     public ProductsRepositoryImpl(Connection connection) {
         this.connection = connection;
@@ -104,6 +107,37 @@ public class ProductsRepositoryImpl implements ProductsRepository {
 
         }
         return null;
+    }
+
+    @Override
+    public void addProductToFavourite(Long userId, Long productId) {
+        try {
+            PreparedStatement statement = connection.prepareStatement(INSERT_PRODUCT_FAVOURITE);
+            completeStatement(statement, userId, productId);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+    @Override
+    public void addProductToBucket(Long userId, Long productId) {
+        try {
+            PreparedStatement statement = connection.prepareStatement(INSERT_PRODUCT_BUCKET);
+            completeStatement(statement, userId, productId);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        };
+    }
+
+    public void completeStatement(PreparedStatement statement, Long userId, Long productId) {
+        try {
+            statement.setLong(1, userId);
+            statement.setLong(2, productId);
+            statement.execute();;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
     }
 
     private RowMapper<List<Product>> rowMapProducts = ((resultSet) -> {

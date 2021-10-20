@@ -14,9 +14,7 @@
 
 </head>
 <body>
-<a href="/profile">Profile</a>
-<a href="/favourites">Favourite</a>
-<a href="/bucket">Bucket</a>
+
 <div id="products">
     <table>
         <tr>
@@ -39,15 +37,9 @@
             <td>
                 <c:out value="${product.description}"/>
             </td>
-            <td>
-                <button id="favourites_btn_${product.id}" onclick="addToFavourites(${product.id})">Добавить в избранное</button>
-            </td>
-            <td>
-                <button id="bucket_btn_${product.id}" onclick="addToBucket(${product.id})">Добавить в корзину</button>
-            </td>
         </tr>
     </c:forEach>
-    </table>
+
 </div>
 
 <div id="form">
@@ -59,64 +51,6 @@
 
 
     <script>
-
-        function isAuthenticated(){
-            var docCookies = document.cookie;
-            var prefix = "auth=";
-            var begin = docCookies.indexOf("; " + prefix);
-            if (begin == -1) {
-                begin = docCookies.indexOf(prefix);
-                if (begin != 0) return false;
-            }
-            return true;
-        }
-
-        function addToFavourites(id){
-
-            var btn = document.getElementById('favourites_btn_'+id);
-            var url = '/add-favourite?id=' + id;
-
-            if (!isAuthenticated()){
-                btn.style.backgroundColor = 'yellow';
-                btn.innerText = 'Авторизуйтесь!';
-                return;
-            }
-
-            $.post(
-                url,
-                successBtn(btn)
-            );
-        }
-
-        function successBtn(btn){
-            btn.style.backgroundColor = 'green';
-            btn.disabled = 'true';
-            btn.innerText = 'Добавлено!';
-            return true;
-        }
-
-        function addToBucket(id){
-            var btn = document.getElementById('bucket_btn_'+id);
-            var url = '/add-bucket?id=' + id;
-
-            if (!isAuthenticated()){
-                btn.style.backgroundColor = 'yellow';
-                btn.innerText = 'Авторизуйтесь!';
-                return;
-            }
-
-            $.ajax({
-                url: url,           /* Куда пойдет запрос */
-                method: 'post',             /* Метод передачи (post или get) */
-                dataType: 'json',          /* Тип данных в ответе (xml, json, script, html). */
-                data: {
-                    id: id /* Параметры передаваемые в запросе. */
-                },
-                success: successBtn(btn)
-            })
-        }
-
-
         function sendProduct(){
             let title = document.getElementById('title').value
             let cost = document.getElementById('cost').value

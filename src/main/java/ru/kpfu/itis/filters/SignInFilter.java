@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 
-@WebFilter(value = {"/profile", "/favourites", "/bucket"})
+@WebFilter(value = {"/profile"})
 public class SignInFilter implements Filter {
 
     @Override

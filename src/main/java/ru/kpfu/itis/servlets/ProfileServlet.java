@@ -1,5 +1,6 @@
 package ru.kpfu.itis.servlets;
 
+
 import ru.kpfu.itis.models.User;
 import ru.kpfu.itis.repositories.AuthRepository;
 import ru.kpfu.itis.repositories.AuthRepostoryImpl;
@@ -25,13 +26,14 @@ public class ProfileServlet extends HttpServlet {
 
     private UsersService usersService;
 
-    private final String URL = "jdbc:postgresql://localhost:5435/postgres";
-    private final String USERNAME = "postgres";
-    private final String PASSWORD = "postgres";
+    private static final String URL = "jdbc:postgresql://localhost:5432/itis";
+    private static final String USERNAME = "postgres";
+    private static final String PASSWORD = "CsM9sVk";
 
     @Override
     public void init() throws ServletException {
         try {
+
             Class.forName("org.postgresql.Driver");
             Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
 
@@ -47,7 +49,7 @@ public class ProfileServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        Cookie cookies[] = req.getCookies();
+        Cookie[] cookies = req.getCookies();
 
         for (Cookie cookie: cookies) {
             if (cookie.getName().equals("auth")) {
@@ -58,13 +60,12 @@ public class ProfileServlet extends HttpServlet {
                 }
             }
         }
-
         resp.sendRedirect("/signIn");
 
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-//
+
     }
 }

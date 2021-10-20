@@ -17,8 +17,8 @@
     <p>
         <label for="login">Login<input id="login" type="text" name="login"></label><br>
         <label for="password">Password<input id="password" type="password" name="password"></label><br>
-
     <p><button type="submit">Вход</button></p><br>
+    <a href="/signUp">Зарегистрироваться</a>
 </form>
 <h3>${signInStatus}</h3>
 

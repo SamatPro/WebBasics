@@ -8,19 +8,18 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 
-@WebFilter(value = {"/profile"})
-public class SignInFilter implements Filter {
+@WebFilter("/favourites")
+public class FavouritesFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-
+        Filter.super.init(filterConfig);
     }
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
-
         Cookie[] cookies = request.getCookies();
 
         if (cookies != null) {
@@ -36,6 +35,6 @@ public class SignInFilter implements Filter {
 
     @Override
     public void destroy() {
-
+        Filter.super.destroy();
     }
 }

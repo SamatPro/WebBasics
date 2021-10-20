@@ -1,49 +1,25 @@
 package ru.kpfu.itis.servlets;
 
-import org.postgresql.Driver;
 import ru.kpfu.itis.forms.LoginForm;
-import ru.kpfu.itis.repositories.AuthRepository;
-import ru.kpfu.itis.repositories.AuthRepostoryImpl;
-import ru.kpfu.itis.repositories.UsersRepository;
-import ru.kpfu.itis.repositories.UsersRepositoryImpl;
 import ru.kpfu.itis.services.UsersService;
-import ru.kpfu.itis.services.UsersServicesImpl;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import javax.servlet.UnavailableException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 
 @WebServlet("/signIn")
 public class SignInServlet extends HttpServlet {
 
     private UsersService usersService;
 
-    private final String URL = "jdbc:postgresql://localhost:5432/itis";
-    private final String USERNAME = "postgres";
-    private final String PASSWORD = "CsM9sVk";
-
     @Override
-    public void init() throws ServletException {
-        try {
-
-            Class.forName("org.postgresql.Driver");
-            Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-
-            UsersRepository usersRepository = new UsersRepositoryImpl(connection);
-            AuthRepository authRepository = new AuthRepostoryImpl(connection);
-            usersService = new UsersServicesImpl(usersRepository, authRepository);
-        } catch (SQLException | ClassNotFoundException e) {
-            System.out.println("Unavailable");
-            throw new UnavailableException("Сайт недоступен!!!");
-        }
+    public void init(ServletConfig config){
+        usersService = (UsersService) config.getServletContext().getAttribute("usersService");
     }
 
     @Override

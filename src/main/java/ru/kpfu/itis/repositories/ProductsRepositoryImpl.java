@@ -14,8 +14,14 @@ public class ProductsRepositoryImpl implements ProductsRepository {
 
     //language=sql
     private final String INSERT_PRODUCT = "INSERT INTO products(title, cost, description) VALUES (?, ?, ?)";
-    private final String FIND_FAVOURITE_PRODUCTS_BY_USER_ID = "SELECT * FROM products p INNER JOIN favourite_products f ON p.id = f.product_id INNER JOIN users ON f.user_id=users.id WHERE user_id=?;";
+    //language=sql
+    private final String INSERT_PRODUCT_INTO_FAVOURITE = "INSERT INTO favourites(user_id, product_id) values (?,?) on conflict do nothing";
+    //language=sql
+    private final String INSERT_PRODUCE_INTO_BUCKET = "INSERT INTO bucket(user_id, product_id) values (?,?) on conflict do nothing";
+
+    private final String FIND_FAVOURITE_PRODUCTS_BY_USER_ID = "SELECT * FROM products p INNER JOIN favourites f ON p.id = f.product_id INNER JOIN users ON f.user_id=users.id WHERE user_id=?;";
     private final String FIND_PRODUCTS_IN_BUCKET_BY_USER_ID = "SELECT * FROM products p INNER JOIN bucket b ON p.id = b.product_id INNER JOIN users ON b.user_id=users.id WHERE user_id=?;";
+
     private final String FIND_ALL = "SELECT * FROM products;";
 
     public ProductsRepositoryImpl(Connection connection) {
@@ -96,6 +102,31 @@ public class ProductsRepositoryImpl implements ProductsRepository {
         } catch (SQLException ignored) {
         }
         return null;
+    }
+
+    @Override
+    public void addProductToFavourites(Long userId, Long productId) {
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(INSERT_PRODUCT_INTO_FAVOURITE);
+            preparedStatement.setLong(1,userId);
+            preparedStatement.setLong(2,productId);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new IllegalArgumentException(e);
+        }
+
+    }
+
+    @Override
+    public void addProductToBucket(Long userId, Long productId) {
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(INSERT_PRODUCE_INTO_BUCKET);
+            preparedStatement.setLong(1,userId);
+            preparedStatement.setLong(2,productId);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 
     private final RowMapper<List<Product>> rowMapProducts = ((resultSet) -> {

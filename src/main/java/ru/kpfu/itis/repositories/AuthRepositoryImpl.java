@@ -8,7 +8,7 @@ import java.sql.*;
 import java.util.List;
 import java.util.Optional;
 
-public class AuthRepostoryImpl implements AuthRepository {
+public class AuthRepositoryImpl implements AuthRepository {
 
     private Connection connection;
 
@@ -17,23 +17,24 @@ public class AuthRepostoryImpl implements AuthRepository {
 
     //language=sql
     private final String SQL_INSERT_AUTH = "INSERT INTO auth (user_id, cookie_value) VALUES (?, ?)";
+    //language=sql
+    private final String SQL_FIND_ALL = "select * from auth";
 
 
-    public AuthRepostoryImpl(Connection connection) {
+    public AuthRepositoryImpl(Connection connection) {
         this.connection = connection;
     }
 
     @Override
     public Auth findByCookieValue(String cookieValue) {
-        ResultSet resultSet = null;
+        ResultSet resultSet;
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_BY_COOKIE_VALUE);
             preparedStatement.setString(1, cookieValue);
             resultSet = preparedStatement.executeQuery();
-            Auth auth = authRowMapper.rowMap(resultSet);
-            return auth;
+            return authRowMapper.rowMap(resultSet);
         } catch (Exception e) {
-            return null;
+            throw new IllegalArgumentException(e);
         }
     }
 
@@ -55,7 +56,7 @@ public class AuthRepostoryImpl implements AuthRepository {
             preparedStatement.setLong(1, auth.getUser().getId());
             preparedStatement.setString(2, auth.getCookieValue());
             preparedStatement.executeUpdate();
-        } catch (SQLException e) {
+        } catch (SQLException ignored) {
 
         }
 

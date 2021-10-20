@@ -8,31 +8,9 @@
 </head>
 <body>
 
-<div id="products">
-    <table>
-        <tr>
-            <th>ID</th>
-            <th>Название</th>
-            <th>Стоимость</th>
-            <th>Описание</th>
-        </tr>
-        <c:forEach var="product" items="${products}">
-        <tr>
-            <td>
-                <c:out value="${product.id}"/>
-            </td>
-            <td>
-                <c:out value="${product.title}"/>
-            </td>
-            <td>
-                <c:out value="${product.cost}"/>
-            </td>
-            <td>
-                <c:out value="${product.description}"/>
-            </td>
-        </tr>
-        </c:forEach>
-
+<div>
+    <a href="/favourites">Избранные</a>
+    <a href="/bucket">Корзина</a>
 </div>
 
 <div id="form">
@@ -42,6 +20,44 @@
     <button id="sendProduct" onclick="sendProduct()">Отправить</button>
 </div>
 
+<div id="products">
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Название</th>
+            <th>Стоимость</th>
+            <th>Описание</th>
+        </tr>
+        <c:forEach var="product" items="${products}">
+            <tr>
+                <td>
+                    <c:out value="${product.id}"/>
+                </td>
+                <td>
+                    <c:out value="${product.title}"/>
+                </td>
+                <td>
+                    <c:out value="${product.cost}"/>
+                </td>
+                <td>
+                    <c:out value="${product.description}"/>
+                </td>
+                <td>
+                    <form action="/favourites" method="post">
+                        <input type="hidden" value="${product.id}" name="id">
+                        <button type="submit">Добавить в избранное</button>
+                    </form>
+                </td>
+                <td>
+                    <form action="/bucket" method="post">
+                        <input type="hidden" value="${product.id}" name="id">
+                        <button type="submit">Добавить в корзину</button>
+                    </form>
+                </td>
+            </tr>
+        </c:forEach>
+
+</div>
 
 <script>
     function sendProduct() {

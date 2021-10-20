@@ -9,6 +9,7 @@ import ru.kpfu.itis.repositories.ProductsRepositoryImpl;
 import ru.kpfu.itis.services.ProductsService;
 import ru.kpfu.itis.services.ProductsServiceImpl;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.UnavailableException;
 import javax.servlet.annotation.WebServlet;
@@ -24,24 +25,11 @@ import java.util.List;
 @WebServlet("/products")
 public class ProductsServlet extends HttpServlet {
 
-    private ProductsService productsService;
-
-    private final String URL = "jdbc:postgresql://localhost:5432/itis";
-    private final String USERNAME = "postgres";
-    private final String PASSWORD = "CsM9sVk";
+    ProductsService productsService;
 
     @Override
-    public void init() throws ServletException {
-        try {
-            Class.forName("org.postgresql.Driver");
-            Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-
-            ProductsRepository productsRepository = new ProductsRepositoryImpl(connection);
-            productsService = new ProductsServiceImpl(productsRepository);
-        } catch (SQLException | ClassNotFoundException e) {
-            System.out.println("Unavailable");
-            throw new UnavailableException("Сайт недоступен!!!");
-        }
+    public void init(ServletConfig config) {
+        productsService = (ProductsService) config.getServletContext().getAttribute("productsService");
     }
 
     @Override

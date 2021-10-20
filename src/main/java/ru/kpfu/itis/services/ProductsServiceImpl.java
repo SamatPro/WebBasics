@@ -28,4 +28,24 @@ public class ProductsServiceImpl implements ProductsService {
     public List<Product> findAll() {
         return productsRepository.findAll();
     }
+
+    @Override
+    public void addProductToFavourites(Long userId, Long productId) {
+        productsRepository.addProductToFavourites(userId,productId);
+    }
+
+    @Override
+    public void addProductToBucket(Long userId, Long productId) {
+        productsRepository.addProductToBucket(userId, productId);
+    }
+
+    @Override
+    public List<Product> findFavouritesByUserId(Long userId) {
+        return productsRepository.findFavouriteProductsByUserId(userId);
+    }
+
+    @Override
+    public List<Product> findBucketByUserId(Long userId) {
+        return productsRepository.findProductsInBucketByUserId(userId);
+    }
 }

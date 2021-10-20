@@ -16,6 +16,8 @@
 <p>${user.lastName}</p>
 
 <a href="/products">Продукты</a>
+<a href="/favourites">Избранные</a>
+<a href="/bucket">Корзина</a>
 
 
 </body>

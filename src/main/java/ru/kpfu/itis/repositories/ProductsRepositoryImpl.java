@@ -17,6 +17,10 @@ public class ProductsRepositoryImpl implements ProductsRepository {
     private final String FIND_FAVOURITE_PRODUCTS_BY_USER_ID = "SELECT * FROM products p INNER JOIN favourite_products f ON p.id = f.product_id INNER JOIN users ON f.user_id=users.id WHERE user_id=?;";
     private final String FIND_PRODUCTS_IN_BUCKET_BY_USER_ID = "SELECT * FROM products p INNER JOIN bucket b ON p.id = b.product_id INNER JOIN users ON b.user_id=users.id WHERE user_id=?;";
     private final String FIND_ALL = "SELECT * FROM products;";
+    private final String INSERT_FAVOURITE_PRODUCT = "INSERT INTO favourite_products(user_id, product_id) VALUES (?, ?)";
+    private final String INSERT_BUCKET = "INSERT INTO bucket(user_id, product_id) VALUES (?, ?)";
+
+
 
     public ProductsRepositoryImpl(Connection connection) {
         this.connection = connection;
@@ -48,7 +52,7 @@ public class ProductsRepositoryImpl implements ProductsRepository {
             PreparedStatement preparedStatement = connection.prepareStatement(INSERT_PRODUCT, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1, product.getTitle());
             preparedStatement.setDouble(2, product.getCost());
-            preparedStatement.setString(3, product.getTitle());
+            preparedStatement.setString(3, product.getDescription());
             resultSet = preparedStatement.executeQuery();
             product = rowMapper.rowMap(resultSet);
             return product;
@@ -104,6 +108,43 @@ public class ProductsRepositoryImpl implements ProductsRepository {
 
         }
         return null;
+    }
+
+    @Override
+    public void addToFavourite(Long userId, Long productId) {
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(INSERT_FAVOURITE_PRODUCT);
+            preparedStatement.setLong(1, userId);
+            preparedStatement.setLong(2, productId);
+            preparedStatement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public boolean isInFavourite(Long userId, Long productId) {
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(FIND_FAVOURITE_PRODUCTS_BY_USER_ID);
+            preparedStatement.setLong(1, userId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            return resultSet.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return true;
+        }
+    }
+
+    @Override
+    public void addToBucket(Long userId, Long productId) {
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(INSERT_BUCKET);
+            preparedStatement.setLong(1, userId);
+            preparedStatement.setLong(2, productId);
+            preparedStatement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     private RowMapper<List<Product>> rowMapProducts = ((resultSet) -> {

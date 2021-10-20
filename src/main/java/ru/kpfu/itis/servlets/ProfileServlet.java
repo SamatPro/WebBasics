@@ -2,7 +2,7 @@ package ru.kpfu.itis.servlets;
 
 import ru.kpfu.itis.models.User;
 import ru.kpfu.itis.repositories.AuthRepository;
-import ru.kpfu.itis.repositories.AuthRepostoryImpl;
+import ru.kpfu.itis.repositories.AuthRepositoryImpl;
 import ru.kpfu.itis.repositories.UsersRepository;
 import ru.kpfu.itis.repositories.UsersRepositoryImpl;
 import ru.kpfu.itis.services.UsersService;
@@ -25,9 +25,9 @@ public class ProfileServlet extends HttpServlet {
 
     private UsersService usersService;
 
-    private final String URL = "jdbc:postgresql://localhost:5435/postgres";
+    private final String URL = "jdbc:postgresql://localhost:5432/test_project";
     private final String USERNAME = "postgres";
-    private final String PASSWORD = "postgres";
+    private final String PASSWORD = "aser4321";
 
     @Override
     public void init() throws ServletException {
@@ -36,7 +36,7 @@ public class ProfileServlet extends HttpServlet {
             Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
 
             UsersRepository usersRepository = new UsersRepositoryImpl(connection);
-            AuthRepository authRepository = new AuthRepostoryImpl(connection);
+            AuthRepository authRepository = new AuthRepositoryImpl(connection);
             usersService = new UsersServicesImpl(usersRepository, authRepository);
         } catch (SQLException | ClassNotFoundException e) {
             System.out.println("Unavailable");
@@ -65,6 +65,6 @@ public class ProfileServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+//
     }
 }

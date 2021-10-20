@@ -37,6 +37,16 @@
             <td>
                 <c:out value="${product.description}"/>
             </td>
+            <td>
+                <form action="/favourites?id=${product.id}" method="post">
+                    <button type="submit">Добавить в избранное</button>
+                </form>
+            </td>
+            <td>
+                <form action="/bucket?id=${product.id}" method="post">
+                    <button type="submit">Добавить в корзину</button>
+                </form>
+            </td>
         </tr>
     </c:forEach>
 

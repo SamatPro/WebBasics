@@ -25,9 +25,9 @@ public class ProductsServlet extends HttpServlet {
 
     private ProductsService productsService;
 
-    private final String URL = "jdbc:postgresql://localhost:5435/test_project";
+    private final String URL = "jdbc:postgresql://localhost:5434/postgres";
     private final String USERNAME = "postgres";
-    private final String PASSWORD = "postgres";
+    private final String PASSWORD = "7788";
 
     @Override
     public void init() throws ServletException {
@@ -51,12 +51,14 @@ public class ProductsServlet extends HttpServlet {
         List<Product> products = productsService.findAll();
         req.setAttribute("products", products);
         req.getRequestDispatcher("/jsp/products.jsp").forward(req, resp);
+        System.out.println("GETTTTT");
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.setCharacterEncoding("UTF-8");
 
+        req.setCharacterEncoding("UTF-8");
+        System.out.println("POSTTTT");
         ObjectMapper objectMapper = new ObjectMapper();
 
         ProductForm productForm = objectMapper.readValue(req.getParameter("product"), ProductForm.class);

@@ -24,14 +24,12 @@ public class ProductsRepositoryImpl implements ProductsRepository {
 
     @Override
     public List<Product> findAll() {
-        ResultSet resultSet = null;
+        ResultSet resultSet;
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL);
             resultSet = preparedStatement.executeQuery();
-            List<Product> products = rowMapProducts.rowMap(resultSet);
-            return products;
-        } catch (SQLException e) {
-
+            return rowMapProducts.rowMap(resultSet);
+        } catch (SQLException ignored) {
         }
         return null;
     }
@@ -42,20 +40,19 @@ public class ProductsRepositoryImpl implements ProductsRepository {
     }
 
     @Override
-    public Product save(Product product) {
-        ResultSet resultSet = null;
+    public void save(Product product) {
+
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(INSERT_PRODUCT, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement preparedStatement = connection.prepareStatement(INSERT_PRODUCT);
             preparedStatement.setString(1, product.getTitle());
             preparedStatement.setDouble(2, product.getCost());
-            preparedStatement.setString(3, product.getTitle());
-            resultSet = preparedStatement.executeQuery();
-            product = rowMapper.rowMap(resultSet);
-            return product;
-        } catch (SQLException e) {
+            preparedStatement.setString(3, product.getDescription());
+            preparedStatement.executeUpdate();
 
+        } catch (SQLException e) {
+            throw new IllegalArgumentException(e);
         }
-        return null;
+
     }
 
     @Override
@@ -63,7 +60,7 @@ public class ProductsRepositoryImpl implements ProductsRepository {
 
     }
 
-    private RowMapper<Product> rowMapper = ((resultSet) -> {
+    private final RowMapper<Product> rowMapper = ((resultSet) -> {
         if (resultSet.next()) {
             Product product = new Product();
             product.setId(resultSet.getLong("id"));
@@ -78,35 +75,30 @@ public class ProductsRepositoryImpl implements ProductsRepository {
 
     @Override
     public List<Product> findFavouriteProductsByUserId(Long userId) {
-        ResultSet resultSet = null;
+        ResultSet resultSet;
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(FIND_FAVOURITE_PRODUCTS_BY_USER_ID);
             preparedStatement.setLong(1, userId);
             resultSet = preparedStatement.executeQuery();
-            List<Product> products = rowMapProducts.rowMap(resultSet);
-            return products;
-        } catch (SQLException e) {
-
-        }
+            return rowMapProducts.rowMap(resultSet);
+        } catch (SQLException ignored) { }
         return null;
     }
 
     @Override
     public List<Product> findProductsInBucketByUserId(Long userId) {
-        ResultSet resultSet = null;
+        ResultSet resultSet;
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(FIND_PRODUCTS_IN_BUCKET_BY_USER_ID);
             preparedStatement.setLong(1, userId);
             resultSet = preparedStatement.executeQuery();
-            List<Product> products = rowMapProducts.rowMap(resultSet);
-            return products;
-        } catch (SQLException e) {
-
+            return rowMapProducts.rowMap(resultSet);
+        } catch (SQLException ignored) {
         }
         return null;
     }
 
-    private RowMapper<List<Product>> rowMapProducts = ((resultSet) -> {
+    private final RowMapper<List<Product>> rowMapProducts = ((resultSet) -> {
         List<Product> products = new ArrayList<>();
         while (resultSet.next()) {
             Product product = new Product();
@@ -118,4 +110,6 @@ public class ProductsRepositoryImpl implements ProductsRepository {
         }
         return products;
     });
+
+
 }

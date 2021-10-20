@@ -1,5 +1,6 @@
 package ru.kpfu.itis.servlets;
 
+import org.postgresql.Driver;
 import ru.kpfu.itis.forms.UserForm;
 import ru.kpfu.itis.repositories.UsersRepository;
 import ru.kpfu.itis.repositories.UsersRepositoryImpl;
@@ -22,13 +23,16 @@ public class RegistrationServlet extends HttpServlet {
 
     private UsersService usersService;
 
-    private final String URL = "jdbc:postgresql://localhost:5435/postgres";
+
+    private final String URL = "jdbc:postgresql://localhost:5432/itis";
     private final String USERNAME = "postgres";
-    private final String PASSWORD = "postgres";
+    private final String PASSWORD = "CsM9sVk";
 
     @Override
     public void init() throws ServletException {
         try {
+
+
             Class.forName("org.postgresql.Driver");
             Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
 

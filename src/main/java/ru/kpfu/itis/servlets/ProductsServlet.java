@@ -1,6 +1,7 @@
 package ru.kpfu.itis.servlets;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.postgresql.Driver;
 import ru.kpfu.itis.forms.ProductForm;
 import ru.kpfu.itis.models.Product;
 import ru.kpfu.itis.repositories.ProductsRepository;
@@ -25,9 +26,9 @@ public class ProductsServlet extends HttpServlet {
 
     private ProductsService productsService;
 
-    private final String URL = "jdbc:postgresql://localhost:5435/test_project";
+    private final String URL = "jdbc:postgresql://localhost:5432/itis";
     private final String USERNAME = "postgres";
-    private final String PASSWORD = "postgres";
+    private final String PASSWORD = "CsM9sVk";
 
     @Override
     public void init() throws ServletException {
@@ -44,22 +45,22 @@ public class ProductsServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        req.setCharacterEncoding("UTF-8");
+        request.setCharacterEncoding("UTF-8");
 
         List<Product> products = productsService.findAll();
-        req.setAttribute("products", products);
-        req.getRequestDispatcher("/jsp/products.jsp").forward(req, resp);
+        request.setAttribute("products", products);
+        request.getRequestDispatcher("/jsp/products.jsp").forward(request, response);
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.setCharacterEncoding("UTF-8");
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
 
         ObjectMapper objectMapper = new ObjectMapper();
 
-        ProductForm productForm = objectMapper.readValue(req.getParameter("product"), ProductForm.class);
+        ProductForm productForm = objectMapper.readValue(request.getParameter("product"), ProductForm.class);
 
         productsService.add(productForm);
     }

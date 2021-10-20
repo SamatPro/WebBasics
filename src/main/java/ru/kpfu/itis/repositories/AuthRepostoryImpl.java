@@ -12,7 +12,10 @@ public class AuthRepostoryImpl implements AuthRepository {
 
     private Connection connection;
 
+    //language=sql
     private final String SQL_FIND_BY_COOKIE_VALUE = "SELECT *, auth.id as auth_id, users.id as user_id FROM auth INNER JOIN users ON auth.user_id=users.id WHERE auth.cookie_value=?";
+
+    //language=sql
     private final String SQL_INSERT_AUTH = "INSERT INTO auth (user_id, cookie_value) VALUES (?, ?)";
 
 
@@ -45,17 +48,17 @@ public class AuthRepostoryImpl implements AuthRepository {
     }
 
     @Override
-    public Auth save(Auth auth) {
-        ResultSet resultSet = null;
+    public void save(Auth auth) {
+
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(SQL_INSERT_AUTH, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setLong(1, auth.getUser().getId());
             preparedStatement.setString(2, auth.getCookieValue());
-            resultSet = preparedStatement.executeQuery();
+            preparedStatement.executeUpdate();
         } catch (SQLException e) {
 
         }
-        return auth;
+
     }
 
     @Override

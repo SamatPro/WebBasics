@@ -14,6 +14,9 @@ public class UsersRepositoryImpl implements UsersRepository {
     private final String SQL_INSERT_USER = "INSERT INTO users(first_name, last_name, login, password_hash) VALUES (?, ?, ?, ?)";
     private final String SQL_FIND_USER_BY_LOGIN = "SELECT * FROM users WHERE login=?;";
 
+    //language=sql
+    private final String SQL_SELECT_ALL_USERS = "select * from users;";
+
 
     public UsersRepositoryImpl(Connection connection) {
         this.connection = connection;
@@ -30,8 +33,7 @@ public class UsersRepositoryImpl implements UsersRepository {
     }
 
     @Override
-    public User save(User user) {
-        ResultSet resultSet = null;
+    public void save(User user) {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(SQL_INSERT_USER, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1, user.getFirstName());
@@ -39,15 +41,10 @@ public class UsersRepositoryImpl implements UsersRepository {
             preparedStatement.setString(3, user.getLogin());
             preparedStatement.setString(4, user.getPasswordHash());
 
-            resultSet = preparedStatement.executeQuery();
+            preparedStatement.executeUpdate();
 
-            if (resultSet.next()) {
-                user.setId(resultSet.getLong("id"));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException ignored) {
         }
-        return user;
     }
 
     @Override

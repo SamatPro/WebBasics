@@ -14,8 +14,14 @@ public class ProductsRepositoryImpl implements ProductsRepository {
 
     //language=sql
     private final String INSERT_PRODUCT = "INSERT INTO products(title, cost, description) VALUES (?, ?, ?)";
-    private final String FIND_FAVOURITE_PRODUCTS_BY_USER_ID = "SELECT * FROM products p INNER JOIN favourite_products f ON p.id = f.product_id INNER JOIN users ON f.user_id=users.id WHERE user_id=?;";
+    //language=sql
+    private final String INSERT_PRODUCT_INTO_FAVOURITE = "INSERT INTO favourites(user_id, product_id) values (?,?) on conflict do nothing";
+    //language=sql
+    private final String INSERT_PRODUCE_INTO_BUCKET = "INSERT INTO bucket(user_id, product_id) values (?,?) on conflict do nothing";
+
+    private final String FIND_FAVOURITE_PRODUCTS_BY_USER_ID = "SELECT * FROM products p INNER JOIN favourites f ON p.id = f.product_id INNER JOIN users ON f.user_id=users.id WHERE user_id=?;";
     private final String FIND_PRODUCTS_IN_BUCKET_BY_USER_ID = "SELECT * FROM products p INNER JOIN bucket b ON p.id = b.product_id INNER JOIN users ON b.user_id=users.id WHERE user_id=?;";
+
     private final String FIND_ALL = "SELECT * FROM products;";
 
     public ProductsRepositoryImpl(Connection connection) {
@@ -24,14 +30,12 @@ public class ProductsRepositoryImpl implements ProductsRepository {
 
     @Override
     public List<Product> findAll() {
-        ResultSet resultSet = null;
+        ResultSet resultSet;
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL);
             resultSet = preparedStatement.executeQuery();
-            List<Product> products = rowMapProducts.rowMap(resultSet);
-            return products;
-        } catch (SQLException e) {
-
+            return rowMapProducts.rowMap(resultSet);
+        } catch (SQLException ignored) {
         }
         return null;
     }
@@ -42,20 +46,19 @@ public class ProductsRepositoryImpl implements ProductsRepository {
     }
 
     @Override
-    public Product save(Product product) {
-        ResultSet resultSet = null;
+    public void save(Product product) {
+
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(INSERT_PRODUCT, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement preparedStatement = connection.prepareStatement(INSERT_PRODUCT);
             preparedStatement.setString(1, product.getTitle());
             preparedStatement.setDouble(2, product.getCost());
-            preparedStatement.setString(3, product.getTitle());
-            resultSet = preparedStatement.executeQuery();
-            product = rowMapper.rowMap(resultSet);
-            return product;
-        } catch (SQLException e) {
+            preparedStatement.setString(3, product.getDescription());
+            preparedStatement.executeUpdate();
 
+        } catch (SQLException e) {
+            throw new IllegalArgumentException(e);
         }
-        return null;
+
     }
 
     @Override
@@ -63,7 +66,7 @@ public class ProductsRepositoryImpl implements ProductsRepository {
 
     }
 
-    private RowMapper<Product> rowMapper = ((resultSet) -> {
+    private final RowMapper<Product> rowMapper = ((resultSet) -> {
         if (resultSet.next()) {
             Product product = new Product();
             product.setId(resultSet.getLong("id"));
@@ -78,35 +81,55 @@ public class ProductsRepositoryImpl implements ProductsRepository {
 
     @Override
     public List<Product> findFavouriteProductsByUserId(Long userId) {
-        ResultSet resultSet = null;
+        ResultSet resultSet;
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(FIND_FAVOURITE_PRODUCTS_BY_USER_ID);
             preparedStatement.setLong(1, userId);
             resultSet = preparedStatement.executeQuery();
-            List<Product> products = rowMapProducts.rowMap(resultSet);
-            return products;
-        } catch (SQLException e) {
-
-        }
+            return rowMapProducts.rowMap(resultSet);
+        } catch (SQLException ignored) { }
         return null;
     }
 
     @Override
     public List<Product> findProductsInBucketByUserId(Long userId) {
-        ResultSet resultSet = null;
+        ResultSet resultSet;
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(FIND_PRODUCTS_IN_BUCKET_BY_USER_ID);
             preparedStatement.setLong(1, userId);
             resultSet = preparedStatement.executeQuery();
-            List<Product> products = rowMapProducts.rowMap(resultSet);
-            return products;
-        } catch (SQLException e) {
-
+            return rowMapProducts.rowMap(resultSet);
+        } catch (SQLException ignored) {
         }
         return null;
     }
 
-    private RowMapper<List<Product>> rowMapProducts = ((resultSet) -> {
+    @Override
+    public void addProductToFavourites(Long userId, Long productId) {
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(INSERT_PRODUCT_INTO_FAVOURITE);
+            preparedStatement.setLong(1,userId);
+            preparedStatement.setLong(2,productId);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new IllegalArgumentException(e);
+        }
+
+    }
+
+    @Override
+    public void addProductToBucket(Long userId, Long productId) {
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(INSERT_PRODUCE_INTO_BUCKET);
+            preparedStatement.setLong(1,userId);
+            preparedStatement.setLong(2,productId);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    private final RowMapper<List<Product>> rowMapProducts = ((resultSet) -> {
         List<Product> products = new ArrayList<>();
         while (resultSet.next()) {
             Product product = new Product();
@@ -118,4 +141,6 @@ public class ProductsRepositoryImpl implements ProductsRepository {
         }
         return products;
     });
+
+
 }

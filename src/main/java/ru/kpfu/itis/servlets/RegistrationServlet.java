@@ -22,7 +22,7 @@ public class RegistrationServlet extends HttpServlet {
 
     private UsersService usersService;
 
-    private final String URL = "jdbc:postgresql://localhost:5435/postgres";
+    private final String URL = "jdbc:postgresql://localhost:5432/test_project";
     private final String USERNAME = "postgres";
     private final String PASSWORD = "postgres";
 

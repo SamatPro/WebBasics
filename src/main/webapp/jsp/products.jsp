@@ -37,6 +37,11 @@
             <td>
                 <c:out value="${product.description}"/>
             </td>
+            <td>
+                <form action="<c:url value="/bucket?product_id=${product.id}"/>" method="post">
+                    <button>Добавить в корзину</button>
+                </form>
+            </td>
         </tr>
     </c:forEach>
 

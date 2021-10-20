@@ -18,6 +18,10 @@ public class ProductsRepositoryImpl implements ProductsRepository {
     private final String FIND_PRODUCTS_IN_BUCKET_BY_USER_ID = "SELECT * FROM products p INNER JOIN bucket b ON p.id = b.product_id INNER JOIN users ON b.user_id=users.id WHERE user_id=?;";
     private final String FIND_ALL = "SELECT * FROM products;";
 
+    private final String INSERT_FAVOURITE_PRODUCT = "INSERT INTO favourite_products(user_id, product_id) VALUES (?,?)";
+    private final String INSERT_BUCKET = "INSERT INTO bucket(user_id, product_id) VALUES (?,?)";
+
+
     public ProductsRepositoryImpl(Connection connection) {
         this.connection = connection;
     }
@@ -104,6 +108,32 @@ public class ProductsRepositoryImpl implements ProductsRepository {
 
         }
         return null;
+    }
+
+    @Override
+    public void addToFavourites(Long userId, Long productId) {
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(INSERT_FAVOURITE_PRODUCT);
+
+            preparedStatement.setLong(1, userId);
+            preparedStatement.setLong(2, productId);
+            preparedStatement.execute();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+    @Override
+    public void addToBucket(Long userId, Long productId) {
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(INSERT_BUCKET);
+
+            preparedStatement.setLong(1, userId);
+            preparedStatement.setLong(2, productId);
+            preparedStatement.execute();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 
     private RowMapper<List<Product>> rowMapProducts = ((resultSet) -> {

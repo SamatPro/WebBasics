@@ -21,7 +21,7 @@ public class SignInFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
 
-        Cookie cookies[] = request.getCookies();
+        Cookie[] cookies = request.getCookies();
 
         if (cookies != null) {
             for (Cookie cookie: cookies) {
@@ -31,10 +31,8 @@ public class SignInFilter implements Filter {
                 }
             }
             response.sendRedirect("/signIn");
-            return;
         } else {
             response.sendRedirect("/signIn");
-            return;
         }
     }
 

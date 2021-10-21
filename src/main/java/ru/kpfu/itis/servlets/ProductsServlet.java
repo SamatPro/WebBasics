@@ -25,9 +25,9 @@ public class ProductsServlet extends HttpServlet {
 
     private ProductsService productsService;
 
-    private final String URL = "jdbc:postgresql://localhost:5435/test_project";
+    private final String URL = "jdbc:postgresql://localhost:5432/test_project";
     private final String USERNAME = "postgres";
-    private final String PASSWORD = "postgres";
+    private final String PASSWORD = "zR#BKdWn";
 
     @Override
     public void init() throws ServletException {

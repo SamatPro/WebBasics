@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--
   Created by IntelliJ IDEA.
   User: Samat
@@ -11,6 +12,38 @@
     <title>Favourites</title>
 </head>
 <body>
+<form action="${pageContext.request.contextPath}/products">
+    <button type="submit">Все товары</button>
+</form>
+<form action="${pageContext.request.contextPath}/bucket">
+    <button type="submit">Корзина</button>
+</form>
 
+<div id="products">
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Название</th>
+            <th>Стоимость</th>
+            <th>Описание</th>
+        </tr>
+        <c:forEach var="product" items="${products}">
+        <tr>
+            <td>
+                <c:out value="${product.id}"/>
+            </td>
+            <td>
+                <c:out value="${product.title}"/>
+            </td>
+            <td>
+                <c:out value="${product.cost}"/>
+            </td>
+            <td>
+                <c:out value="${product.description}"/>
+            </td>
+        </tr>
+        </c:forEach>
+
+</div>
 </body>
 </html>

@@ -60,7 +60,6 @@ public class ProfileServlet extends HttpServlet {
         }
 
         resp.sendRedirect("/signIn");
-
     }
 
     @Override

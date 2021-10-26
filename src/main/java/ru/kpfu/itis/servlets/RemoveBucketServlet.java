@@ -19,7 +19,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-@WebServlet("/bucket-remove")
+@WebServlet("/remove-bucket")
 public class RemoveBucketServlet extends HttpServlet {
 
 

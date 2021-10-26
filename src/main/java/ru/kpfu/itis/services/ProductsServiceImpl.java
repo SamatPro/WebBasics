@@ -46,6 +46,11 @@ public class ProductsServiceImpl implements ProductsService {
 
     @Override
     public void removeFromBucket(Long userId, Long idToRemove) {
+        productsRepository.removeFromBucket(userId, idToRemove);
+    }
 
+    @Override
+    public void removeFromFavourites(Long userId, Long idToRemove) {
+        productsRepository.removeFromFavourite(userId, idToRemove);
     }
 }

@@ -12,4 +12,5 @@ public interface ProductsService {
     void addToBusket(Long userId, Long productId);
     List<Product> allInBusketById(Long userId);
     void removeFromBucket(Long userId, Long idToRemove);
+    void removeFromFavourites(Long userId, Long idToRemove);
 }

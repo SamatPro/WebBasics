@@ -34,8 +34,31 @@
         <td>
             <c:out value="${product.description}"/>
         </td>
+        <td>
+            <button id="remove${product.id}" onclick="remove(${product.id})">Remove</button>
+        </td>
     </tr>
 </c:forEach>
 </table>
+
+<script>
+    function remove(id) {
+        $.ajax({
+            url: '/remove-bucket',           /* Куда пойдет запрос */
+            method: 'post',             /* Метод передачи (post или get) */
+            dataType: 'json',          /* Тип данных в ответе (xml, json, script, html). */
+            data: {
+                idToRemove: id
+            },
+            success: function (data) {   /* функция которая будет выполнена после успешного запроса.  */
+                alert(data);            /* В переменной data содержится ответ от /products. */
+            }
+        })
+        location.reload();
+    }
+</script>
+
+
+
 </body>
 </html>

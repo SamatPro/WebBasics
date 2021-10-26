@@ -11,4 +11,5 @@ public interface ProductsRepository extends CrudRepository<Product> {
     void addProductToFavourite(Long userId, Long productId);
     void addProductToBusket(Long userId, Long productId);
     void removeFromBucket(Long userId, Long idToRemove);
+    void removeFromFavourite(Long userID, Long idToRemove);
 }

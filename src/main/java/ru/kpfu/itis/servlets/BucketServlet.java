@@ -71,5 +71,19 @@ public class BucketServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         super.doPost(req, resp);
+        Cookie cookies[] = req.getCookies();
+
+        for (Cookie cookie: cookies) {
+            if (cookie.getName().equals("auth")) {
+                User user = usersService.findUserByCookieValue(cookie.getValue());
+                if (user != null) {
+                    String idToRemove = req.getParameter("idToRemove");
+                    if (idToRemove != null) {
+                        productsService.removeFromBucket(user.getId(), Long.valueOf(idToRemove));
+                        req.getRequestDispatcher("/jsp/products.jsp").forward(req, resp);
+                    }
+                }
+            }
+        }
     }
 }

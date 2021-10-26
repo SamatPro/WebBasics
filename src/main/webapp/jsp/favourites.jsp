@@ -34,9 +34,28 @@
             <td>
                 <c:out value="${product.description}"/>
             </td>
+            <td>
+                <button id="remove${product.id}" onclick="removeFromFavourites(${product.id})">Убрать</button>
+            </td>
         </tr>
         </c:forEach>
 
 </div>
+<script>
+    function removeFromFavourites(productId) {
+        $.ajax({
+            url: '/favourites',
+            method: 'post',
+            dataType: 'json',
+            data: {
+                idToRemove: productId
+            },
+            success: function (data) {
+                alert(data);
+            }
+        })
+        location.reload();
+    }
+</script>
 </body>
 </html>

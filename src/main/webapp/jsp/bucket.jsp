@@ -34,10 +34,29 @@
             <td>
                 <c:out value="${product.description}"/>
             </td>
+            <td>
+                <button id="remove${product.id}" onclick="removeFromBucket(${product.id})">Удалить</button>
+            </td>
         </tr>
         </c:forEach>
 
 </div>
 
+<script>
+    function removeFromBucket(productId) {
+        $.ajax({
+            url: '/bucket',
+            method: 'post',
+            dataType: 'json',
+            data: {
+                idToRemove: productId
+            },
+            success: function (data) {
+                alert(data);
+            }
+        })
+        location.reload();
+    }
+</script>
 </body>
 </html>

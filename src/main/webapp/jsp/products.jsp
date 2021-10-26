@@ -14,7 +14,6 @@
 
 </head>
 <body>
-
 <div id="products">
     <table>
         <tr>
@@ -23,23 +22,29 @@
             <th>Стоимость    </th>
             <th>Описание     </th>
         </tr>
-    <c:forEach var="product" items="${products}">
-        <tr>
-            <td>
-                <c:out value="${product.id}"/>
-            </td>
-            <td>
-                <c:out value="${product.title}"/>
-            </td>
-            <td>
-                <c:out value="${product.cost}"/>
-            </td>
-            <td>
-                <c:out value="${product.description}"/>
-            </td>
-        </tr>
-    </c:forEach>
-
+        <c:forEach var="product" items="${products}">
+            <tr>
+                <td>
+                    <c:out value="${product.id}"/>
+                </td>
+                <td>
+                    <c:out value="${product.title}"/>
+                </td>
+                <td>
+                    <c:out value="${product.cost}"/>
+                </td>
+                <td>
+                    <c:out value="${product.description}"/>
+                </td>
+                <td>
+                    <button id="favourites_btn_${product.id}" onclick="addToFavourites(${product.id})">Добавить в избранное</button>
+                </td>
+                <td>
+                    <button id="bucket_btn_${product.id}" onclick="addToBucket(${product.id})">Добавить в корзину</button>
+                </td>
+            </tr>
+        </c:forEach>
+    </table>
 </div>
 
 <div id="form">
@@ -50,30 +55,76 @@
 </div>
 
 
-    <script>
-        function sendProduct(){
-            let title = document.getElementById('title').value
-            let cost = document.getElementById('cost').value
-            let description = document.getElementById('description').value
-
-            var product = {
-                title: title,
-                cost: cost,
-                description: description
-            }
-            $.ajax({
-                url: '/products',           /* Куда пойдет запрос */
-                method: 'post',             /* Метод передачи (post или get) */
-                dataType: 'json',          /* Тип данных в ответе (xml, json, script, html). */
-                data: {
-                    product: JSON.stringify(product) /* Параметры передаваемые в запросе. */
-                },
-                success: function(data){   /* функция которая будет выполнена после успешного запроса.  */
-                    alert(data);            /* В переменной data содержится ответ от /products. */
-                }
-            })
+<script>
+    function isAuthenticated(){
+        let docCookies = document.cookie;
+        let prefix = "auth=";
+        let begin = docCookies.indexOf("; " + prefix);
+        if (begin == -1) {
+            begin = docCookies.indexOf(prefix);
+            if (begin != 0) return false;
         }
-    </script>
+        return true;
+    }
+    function addToFavourites(id){
+        let btn = document.getElementById('favourites_btn_'+id);
+        let url = '/add-favourite?id=' + id;
+        if (!isAuthenticated()){
+            btn.style.backgroundColor = 'yellow';
+            btn.innerText = 'Авторизуйтесь!';
+            return;
+        }
+        $.post(
+            url,
+            successBtn(btn)
+        );
+    }
+    function successBtn(btn){
+        btn.style.backgroundColor = 'green';
+        btn.disabled = 'true';
+        btn.innerText = 'Добавлено!';
+        return true;
+    }
+    function addToBucket(id){
+        let btn = document.getElementById('bucket_btn_'+id);
+        let url = '/add-bucket?id=' + id;
+        if (!isAuthenticated()){
+            btn.style.backgroundColor = 'yellow';
+            btn.innerText = 'Авторизуйтесь!';
+            return;
+        }
+        $.ajax({
+            url: url,           /* Куда пойдет запрос */
+            method: 'post',             /* Метод передачи (post или get) */
+            dataType: 'json',          /* Тип данных в ответе (xml, json, script, html). */
+            data: {
+                id: id /* Параметры передаваемые в запросе. */
+            },
+            success: successBtn(btn)
+        })
+    }
+    function sendProduct(){
+        let title = document.getElementById('title').value
+        let cost = document.getElementById('cost').value
+        let description = document.getElementById('description').value
+        let product = {
+            title: title,
+            cost: cost,
+            description: description
+        }
+        $.ajax({
+            url: '/products',           /* Куда пойдет запрос */
+            method: 'post',             /* Метод передачи (post или get) */
+            dataType: 'json',          /* Тип данных в ответе (xml, json, script, html). */
+            data: {
+                product: JSON.stringify(product) /* Параметры передаваемые в запросе. */
+            },
+            success: function(data){   /* функция которая будет выполнена после успешного запроса.  */
+                alert(data);            /* В переменной data содержится ответ от /products. */
+            }
+        })
+    }
+</script>
 
 
 </body>

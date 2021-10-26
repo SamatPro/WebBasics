@@ -50,6 +50,7 @@
             <version>1.2</version>
         </dependency>
 
+<!--        зависимость для ajax -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>

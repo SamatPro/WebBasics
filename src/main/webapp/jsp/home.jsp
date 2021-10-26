@@ -13,10 +13,10 @@
 </head>
 <body>
 
-    <a href="/signUp">Регистрация</a>
-    <a href="/signIn">Вход</a>
-    <a href="/products">Продукты</a>
-    <a href="/profile">Профиль</a>
+<a href="/signUp">Регистрация</a>
+<a href="/signIn">Вход</a>
+<a href="/products">Продукты</a>
+<a href="/profile">Профиль</a>
 
 
 </body>

@@ -13,6 +13,10 @@ public interface ProductsService {
 
     public void addToFavourites(Long userId, Long productId);
 
+    public void removeFromBucket(Long userId, Long productId);
+
+    public void removeFromFavourites(Long userId, Long productId);
+
     List<Product> findAll();
 
     List<Product> findFavouriteProductsByUserId(Long userId);

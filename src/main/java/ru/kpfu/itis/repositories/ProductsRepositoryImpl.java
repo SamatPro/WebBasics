@@ -19,6 +19,8 @@ public class ProductsRepositoryImpl implements ProductsRepository {
     private final String FIND_FAVOURITE_PRODUCTS_BY_USER_ID = "SELECT * FROM products p INNER JOIN favourite_products f ON p.id = f.product_id INNER JOIN users ON f.user_id=users.id WHERE user_id=?;";
     private final String FIND_PRODUCTS_IN_BUCKET_BY_USER_ID = "SELECT * FROM products p INNER JOIN bucket b ON p.id = b.product_id INNER JOIN users ON b.user_id=users.id WHERE user_id=?;";
     private final String FIND_ALL = "SELECT * FROM products;";
+    private final String REMOVE_FROM_BUCKET = "DELETE FROM bucket WHERE user_id = ? AND product_id = ?";
+    private final String REMOVE_FROM_FAVOURITES = "DELETE FROM favourite_products WHERE user_id = ? AND product_id = ?";
 
     public ProductsRepositoryImpl(Connection connection) {
         this.connection = connection;
@@ -148,4 +150,30 @@ public class ProductsRepositoryImpl implements ProductsRepository {
         }
         return products;
     });
+
+    @Override
+    public void removeFromBucket(Long userId, Long productId) {
+        ResultSet resultSet = null;
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(REMOVE_FROM_BUCKET, Statement.RETURN_GENERATED_KEYS);
+            preparedStatement.setLong(1, userId);
+            preparedStatement.setLong(2, productId);
+            resultSet = preparedStatement.executeQuery();
+        } catch (SQLException e) {
+
+        }
+    }
+
+    @Override
+    public void removeFromFavourites(Long userId, Long productId) {
+        ResultSet resultSet = null;
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(REMOVE_FROM_FAVOURITES, Statement.RETURN_GENERATED_KEYS);
+            preparedStatement.setLong(1, userId);
+            preparedStatement.setLong(2, productId);
+            resultSet = preparedStatement.executeQuery();
+        } catch (SQLException e) {
+
+        }
+    }
 }

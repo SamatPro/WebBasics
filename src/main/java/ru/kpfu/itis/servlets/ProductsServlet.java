@@ -81,9 +81,7 @@ public class ProductsServlet extends HttpServlet {
         }
 
         ObjectMapper objectMapper = new ObjectMapper();
-
         ProductForm productForm = objectMapper.readValue(req.getParameter("product"), ProductForm.class);
-
         productsService.add(productForm);
 
         req.getRequestDispatcher("/jsp/products.jsp").forward(req, resp);

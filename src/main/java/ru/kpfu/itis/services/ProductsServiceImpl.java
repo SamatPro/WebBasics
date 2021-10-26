@@ -49,4 +49,14 @@ public class ProductsServiceImpl implements ProductsService {
     public List<Product> findInBucketByUserId(Long userId) {
         return productsRepository.findProductsInBucketByUserId(userId);
     }
+
+    @Override
+    public void removeFromBucket(Long userId, Long productId) {
+        productsRepository.removeFromBucket(userId, productId);
+    }
+
+    @Override
+    public void removeFromFavourites(Long userId, Long productId) {
+        productsRepository.removeFromFavourites(userId, productId);
+    }
 }

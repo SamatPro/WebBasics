@@ -65,6 +65,16 @@ public class FavouritesServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doPost(req, resp);
+        Cookie cookie = CookieService.getCookie(req, "auth");
+        if (cookie != null) {
+            User user = usersService.findUserByCookieValue(cookie.getValue());
+            if (user != null) {
+                String idToRemove = req.getParameter("idToRemove");
+                if (idToRemove != null) {
+                    productsService.removeFromFavourites(user.getId(), Long.valueOf(idToRemove));
+                    req.getRequestDispatcher("/jsp/products.jsp").forward(req, resp);
+                }
+            }
+        }
     }
 }

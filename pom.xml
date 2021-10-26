@@ -55,6 +55,32 @@
             <artifactId>jackson-databind</artifactId>
             <version>2.11.1</version>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.22</version>
+            <scope>provided</scope>
+        </dependency>
+
+
+        <!--        Для примера standalone приложения-->
+<!--        <dependency>-->
+<!--            <groupId>com.vk.api</groupId>-->
+<!--            <artifactId>sdk</artifactId>-->
+<!--            <version>1.0.7</version>-->
+<!--        </dependency>-->
+        <dependency>
+            <groupId>com.vk.api</groupId>
+            <artifactId>sdk</artifactId>
+            <version>0.5.12</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jdk14</artifactId>
+            <version>1.7.22</version>
+        </dependency>
     </dependencies>
 
 </project>

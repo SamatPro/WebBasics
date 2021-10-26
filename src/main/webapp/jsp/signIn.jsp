@@ -19,6 +19,8 @@
         <label for="password">Password<input id="password" type="password" name="password"></label><br>
 
     <p><button type="submit">Вход</button></p><br>
+
+    <a href="https://oauth.vk.com/authorize?client_id=7984753&redirect_uri=http://localhost:8080/vk&display=page&v=5.131&scope=status,email">Войти через ВК</a>
 </form>
 <h3>${signInStatus}</h3>
 

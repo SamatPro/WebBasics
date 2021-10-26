@@ -25,7 +25,7 @@ import java.util.Optional;
 public class FavouritesServlet extends HttpServlet {
     //todo получить список избранных продуктов пользователя и вывести на favourite.jsp
 
-    private final String URL = "jdbc:postgresql://localhost:5432/test_project";
+    private final String URL = "jdbc:postgresql://localhost:5435/test_project";
     private final String USERNAME = "postgres";
     private final String PASSWORD = "postgres";
     private AuthRepository authRepository;

@@ -2,7 +2,10 @@ package ru.kpfu.itis.repositories;
 
 import ru.kpfu.itis.models.User;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,14 +36,14 @@ public class UsersRepositoryImpl implements UsersRepository {
     public User save(User user) {
         ResultSet resultSet = null;
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(SQL_INSERT_USER, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement preparedStatement = connection.prepareStatement(SQL_INSERT_USER, PreparedStatement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1, user.getFirstName());
             preparedStatement.setString(2, user.getLastName());
             preparedStatement.setString(3, user.getLogin());
             preparedStatement.setString(4, user.getPasswordHash());
 
-            resultSet = preparedStatement.executeQuery();
-
+            preparedStatement.executeUpdate();
+            resultSet = preparedStatement.getGeneratedKeys();
             if (resultSet.next()) {
                 user.setId(resultSet.getLong("id"));
             }

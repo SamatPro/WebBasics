@@ -4,6 +4,7 @@ import ru.kpfu.itis.forms.ProductForm;
 import ru.kpfu.itis.models.Product;
 import ru.kpfu.itis.repositories.ProductsRepository;
 
+import javax.servlet.http.Cookie;
 import java.util.List;
 
 public class ProductsServiceImpl implements ProductsService {
@@ -25,7 +26,37 @@ public class ProductsServiceImpl implements ProductsService {
     }
 
     @Override
+    public void addToBucket(Long userId, Long productId) {
+        productsRepository.addToBucket(userId, productId);
+    }
+
+    @Override
+    public void addToFavourites(Long userId, Long productId) {
+        productsRepository.addToFavourites(userId, productId);
+    }
+
+    @Override
     public List<Product> findAll() {
         return productsRepository.findAll();
+    }
+
+    @Override
+    public List<Product> findFavouriteProductsByUserId(Long userId) {
+        return productsRepository.findFavouriteProductsByUserId(userId);
+    }
+
+    @Override
+    public List<Product> findInBucketByUserId(Long userId) {
+        return productsRepository.findProductsInBucketByUserId(userId);
+    }
+
+    @Override
+    public void removeFromBucket(Long userId, Long productId) {
+        productsRepository.removeFromBucket(userId, productId);
+    }
+
+    @Override
+    public void removeFromFavourites(Long userId, Long productId) {
+        productsRepository.removeFromFavourites(userId, productId);
     }
 }

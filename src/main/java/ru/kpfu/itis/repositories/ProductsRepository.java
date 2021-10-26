@@ -2,6 +2,7 @@ package ru.kpfu.itis.repositories;
 
 import ru.kpfu.itis.models.Product;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface ProductsRepository extends CrudRepository<Product> {
@@ -9,4 +10,5 @@ public interface ProductsRepository extends CrudRepository<Product> {
     List<Product> findProductsInBucketByUserId(Long userId);
     void addProductToFavourite(Long userId, Long productId);
     void addProductToBusket(Long userId, Long productId);
+    void removeFromBucket(Long userId, Long idToRemove);
 }

@@ -19,6 +19,7 @@ public class ProductsRepositoryImpl implements ProductsRepository {
     private final String FIND_FAVOURITE_PRODUCTS_BY_USER_ID = "SELECT * FROM products p INNER JOIN favourite_products f ON p.id = f.product_id INNER JOIN users ON f.user_id=users.id WHERE user_id=?;";
     private final String FIND_PRODUCTS_IN_BUCKET_BY_USER_ID = "SELECT * FROM products p INNER JOIN bucket b ON p.id = b.product_id INNER JOIN users ON b.user_id=users.id WHERE user_id=?;";
     private final String FIND_ALL = "SELECT * FROM products;";
+    private final String REMOVE_FROM_BUCKET = "";
 
     public ProductsRepositoryImpl(Connection connection) {
         this.connection = connection;
@@ -129,6 +130,11 @@ public class ProductsRepositoryImpl implements ProductsRepository {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
+    }
+
+    @Override
+    public void removeFromBucket(Long userId, Long idToRemove) {
+
     }
 
     private RowMapper<List<Product>> rowMapProducts = ((resultSet) -> {

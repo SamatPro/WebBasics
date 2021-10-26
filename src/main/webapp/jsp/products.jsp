@@ -39,12 +39,12 @@
             </td>
             <td>
                 <form action="/favourites?id=${product.id}" method="post">
-                    <button type="submit">Добавить в избранное</button>
+                    <button id="favourites_button_${product.id}" type="submit">Добавить в избранное</button>
                 </form>
             </td>
             <td>
                 <form action="/bucket?id=${product.id}" method="post">
-                    <button type="submit">Добавить в корзину</button>
+                    <button id="bucket_button_${product.id}" type="submit">Добавить в корзину</button>
                 </form>
             </td>
         </tr>
@@ -59,31 +59,87 @@
     <button id="sendProduct" onclick="sendProduct()">Отправить</button>
 </div>
 
+<script>
 
-    <script>
-        function sendProduct(){
-            let title = document.getElementById('title').value
-            let cost = document.getElementById('cost').value
-            let description = document.getElementById('description').value
-
-            var product = {
-                title: title,
-                cost: cost,
-                description: description
-            }
-            $.ajax({
-                url: '/products',           /* Куда пойдет запрос */
-                method: 'post',             /* Метод передачи (post или get) */
-                dataType: 'json',          /* Тип данных в ответе (xml, json, script, html). */
-                data: {
-                    product: JSON.stringify(product) /* Параметры передаваемые в запросе. */
-                },
-                success: function(data){   /* функция которая будет выполнена после успешного запроса.  */
-                    alert(data);            /* В переменной data содержится ответ от /products. */
-                }
-            })
+    function isAuthenticated(){
+        var cookies = document.cookie;
+        var prefix = "auth=";
+        var begin = cookies.indexOf("; " + prefix);
+        if (begin == -1) {
+            begin = docCookies.indexOf(prefix);
+            if (begin != 0) return false;
         }
-    </script>
+        return true;
+    }
+
+    function addToFavourites(id){
+        var url = '/bucket?id=' + id
+        var button = document.getElementById('favourites_button_'+id);
+        if (!isAuthenticated()){
+            btn.style.backgroundColor = 'yellow';
+            btn.innerText = 'Need to authorise!';
+            return;
+        }
+
+        $.post(
+            url,
+            successButton(button)
+        );
+    }
+
+    function successButton(button){
+        button.innerText = 'Added';
+        button.style.backgroundColor = 'green';
+        button.disabled = 'true';
+        return true;
+    }
+
+    function addToBucket(id){
+        var button = document.getElementById('bucket_button_'+id);
+        var url = '/bucket?id=' + id;
+
+        if (!isAuthenticated()){
+            button.style.backgroundColor = 'yellow';
+            button.innerText = 'Авторизуйтесь!';
+            return;
+        }
+
+        $.ajax({
+            url: url,           /* Куда пойдет запрос */
+            method: 'post',             /* Метод передачи (post или get) */
+            dataType: 'json',          /* Тип данных в ответе (xml, json, script, html). */
+            data: {
+                id: id /* Параметры передаваемые в запросе. */
+            },
+            success: successButton(button)
+        })
+    }
+
+
+    function sendProduct(){
+        let title = document.getElementById('title').value
+        let cost = document.getElementById('cost').value
+        let description = document.getElementById('description').value
+
+        var product = {
+            title: title,
+            cost: cost,
+            description: description
+        }
+        $.ajax({
+            url: '/products',           /* Куда пойдет запрос */
+            method: 'post',             /* Метод передачи (post или get) */
+            dataType: 'json',          /* Тип данных в ответе (xml, json, script, html). */
+            data: {
+                product: JSON.stringify(product) /* Параметры передаваемые в запросе. */
+            },
+            success: function(data){   /* функция которая будет выполнена после успешного запроса.  */
+                alert(data);            /* В переменной data содержится ответ от /products. */
+            }
+        })
+    }
+</script>
+
 
 
 </body>

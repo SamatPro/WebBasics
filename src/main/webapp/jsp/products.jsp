@@ -38,14 +38,10 @@
                 <c:out value="${product.description}"/>
             </td>
             <td>
-                <form action="/favourites?id=${product.id}" method="post">
-                    <button id="favourites_button_${product.id}" type="submit">Добавить в избранное</button>
-                </form>
+                    <button id="favourites_button_${product.id}" onclick="addToFavourites(${product.id})" >Добавить в избранное</button>
             </td>
             <td>
-                <form action="/bucket?id=${product.id}" method="post">
-                    <button id="bucket_button_${product.id}" type="submit">Добавить в корзину</button>
-                </form>
+                    <button id="bucket_button_${product.id}" onclick="addToBucket(${product.id})">Добавить в корзину</button>
             </td>
         </tr>
     </c:forEach>
@@ -76,8 +72,8 @@
         var url = '/bucket?id=' + id
         var button = document.getElementById('favourites_button_'+id);
         if (!isAuthenticated()){
-            btn.style.backgroundColor = 'yellow';
-            btn.innerText = 'Need to authorise!';
+            button.style.backgroundColor = 'yellow';
+            button.innerText = 'Need to authorise!';
             return;
         }
 

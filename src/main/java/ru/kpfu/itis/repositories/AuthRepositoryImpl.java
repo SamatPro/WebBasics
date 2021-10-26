@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public class AuthRepositoryImpl implements AuthRepository {
 
-    private Connection connection;
+    private final Connection connection;
 
     private final String SQL_FIND_BY_COOKIE_VALUE = "SELECT *, auth.id as auth_id, users.id as user_id FROM auth INNER JOIN users ON auth.user_id=users.id WHERE auth.cookie_value=?";
     private final String SQL_INSERT_AUTH = "INSERT INTO auth (user_id, cookie_value) VALUES (?, ?)";
@@ -27,8 +27,7 @@ public class AuthRepositoryImpl implements AuthRepository {
             PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_BY_COOKIE_VALUE);
             preparedStatement.setString(1, cookieValue);
             resultSet = preparedStatement.executeQuery();
-            Auth auth = authRowMapper.rowMap(resultSet);
-            return auth;
+            return authRowMapper.rowMap(resultSet);
         } catch (Exception e) {
             return null;
         }
@@ -53,7 +52,7 @@ public class AuthRepositoryImpl implements AuthRepository {
             preparedStatement.setString(2, auth.getCookieValue());
             resultSet = preparedStatement.executeQuery();
         } catch (SQLException e) {
-
+            e.printStackTrace();
         }
         return auth;
     }
@@ -63,7 +62,7 @@ public class AuthRepositoryImpl implements AuthRepository {
 
     }
 
-    private RowMapper<Auth> authRowMapper = (resultSet) -> {
+    private final RowMapper<Auth> authRowMapper = (resultSet) -> {
         if (resultSet.next()) {
             Auth auth = new Auth();
             auth.setId(resultSet.getLong("auth_id"));

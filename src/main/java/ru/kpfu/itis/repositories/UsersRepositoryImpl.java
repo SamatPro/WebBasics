@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public class UsersRepositoryImpl implements UsersRepository {
 
-    private Connection connection;
+    private final Connection connection;
 
     //language=sql
     private final String SQL_INSERT_USER = "INSERT INTO users(first_name, last_name, login, password_hash) VALUES (?, ?, ?, ?)";

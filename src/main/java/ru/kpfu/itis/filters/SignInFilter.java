@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 
-@WebFilter(value = {"/profile"})
+@WebFilter(value = {"/profile", "/favourites", "/bucket"})
 public class SignInFilter implements Filter {
 
     @Override
@@ -21,7 +21,7 @@ public class SignInFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
 
-        Cookie cookies[] = request.getCookies();
+        Cookie[] cookies = request.getCookies();
 
         if (cookies != null) {
             for (Cookie cookie: cookies) {
@@ -30,12 +30,8 @@ public class SignInFilter implements Filter {
                     return;
                 }
             }
-            response.sendRedirect("/signIn");
-            return;
-        } else {
-            response.sendRedirect("/signIn");
-            return;
         }
+        response.sendRedirect("/signIn");
     }
 
     @Override

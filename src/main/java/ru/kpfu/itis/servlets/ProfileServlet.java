@@ -58,13 +58,7 @@ public class ProfileServlet extends HttpServlet {
                 }
             }
         }
-
         resp.sendRedirect("/signIn");
-
     }
 
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
-    }
 }

@@ -7,7 +7,7 @@ import ru.kpfu.itis.models.User;
 import javax.servlet.http.Cookie;
 
 public interface UsersService {
-    User register(UserForm userForm);
+    void register(UserForm userForm);
     Cookie signIn(LoginForm loginForm);
     User findUserByCookieValue(String cookieValue);
 }

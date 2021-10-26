@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public class ProductsRepositoryImpl implements ProductsRepository {
 
-    private Connection connection;
+    private final Connection connection;
 
     //language=sql
     private final String INSERT_PRODUCT = "INSERT INTO products(title, cost, description) VALUES (?, ?, ?)";
@@ -24,8 +24,8 @@ public class ProductsRepositoryImpl implements ProductsRepository {
             "SELECT * FROM favourite_products WHERE user_id=? and product_id=?";
     private final String FIND_IN_BUCKET_BY_USER_AND_PRODUCT =
             "SELECT * FROM bucket WHERE user_id=? and product_id=?";
-    private final String REMOVE_FROM_BUCKET = "DELETE FROM bucket WHERE user_id=? and product_id=?";
-    private final String REMOVE_FROM_FAVOURITES = "DELETE FROM favourite_products WHERE user_id=? and product_id=?";
+    private final String DELETE_FROM_BUCKET = "DELETE FROM bucket WHERE user_id=? and product_id=?";
+    private final String DELETE_FROM_FAVOURITES = "DELETE FROM favourite_products WHERE user_id=? and product_id=?";
 
     public ProductsRepositoryImpl(Connection connection) {
         this.connection = connection;
@@ -40,7 +40,7 @@ public class ProductsRepositoryImpl implements ProductsRepository {
             List<Product> products = rowMapProducts.rowMap(resultSet);
             return products;
         } catch (SQLException e) {
-
+            e.printStackTrace();
         }
         return null;
     }
@@ -62,7 +62,7 @@ public class ProductsRepositoryImpl implements ProductsRepository {
             product = rowMapper.rowMap(resultSet);
             return product;
         } catch (SQLException e) {
-
+            e.printStackTrace();
         }
         return null;
     }
@@ -92,10 +92,9 @@ public class ProductsRepositoryImpl implements ProductsRepository {
             PreparedStatement preparedStatement = connection.prepareStatement(FIND_FAVOURITE_PRODUCTS_BY_USER_ID);
             preparedStatement.setLong(1, userId);
             resultSet = preparedStatement.executeQuery();
-            List<Product> products = rowMapProducts.rowMap(resultSet);
-            return products;
+            return rowMapProducts.rowMap(resultSet);
         } catch (SQLException e) {
-
+            e.printStackTrace();
         }
         return null;
     }
@@ -110,7 +109,7 @@ public class ProductsRepositoryImpl implements ProductsRepository {
             List<Product> products = rowMapProducts.rowMap(resultSet);
             return products;
         } catch (SQLException e) {
-
+            e.printStackTrace();
         }
         return null;
     }
@@ -130,10 +129,10 @@ public class ProductsRepositoryImpl implements ProductsRepository {
     @Override
     public boolean isAlreadyInFavourite(Long userId, Long productId){
         try{
-            PreparedStatement statement = connection.prepareStatement(FIND_FAVOURITE_BY_USER_AND_PRODUCT);
-            statement.setLong(1, userId);
-            statement.setLong(2, productId);
-            ResultSet resultSet = statement.executeQuery();
+            PreparedStatement preparedStatement = connection.prepareStatement(FIND_FAVOURITE_BY_USER_AND_PRODUCT);
+            preparedStatement.setLong(1, userId);
+            preparedStatement.setLong(2, productId);
+            ResultSet resultSet = preparedStatement.executeQuery();
             return resultSet.next();
         }catch (SQLException e){
             e.printStackTrace();
@@ -168,24 +167,24 @@ public class ProductsRepositoryImpl implements ProductsRepository {
     }
 
     @Override
-    public void removeFromBucket(Long userId, Long productId) {
+    public void deleteFromBucket(Long userId, Long productId) {
         try{
-            PreparedStatement statement = connection.prepareStatement(REMOVE_FROM_BUCKET);
-            statement.setLong(1, userId);
-            statement.setLong(2, productId);
-            statement.execute();
+            PreparedStatement preparedStatement = connection.prepareStatement(DELETE_FROM_BUCKET);
+            preparedStatement.setLong(1, userId);
+            preparedStatement.setLong(2, productId);
+            preparedStatement.execute();
         }catch (SQLException e){
             throw new IllegalArgumentException(e);
         }
     }
 
     @Override
-    public void removeFromFavourites(Long userId, Long productId) {
+    public void deleteFromFavourites(Long userId, Long productId) {
         try{
-            PreparedStatement statement = connection.prepareStatement(REMOVE_FROM_FAVOURITES);
-            statement.setLong(1, userId);
-            statement.setLong(2, productId);
-            statement.execute();
+            PreparedStatement preparedStatement = connection.prepareStatement(DELETE_FROM_FAVOURITES);
+            preparedStatement.setLong(1, userId);
+            preparedStatement.setLong(2, productId);
+            preparedStatement.execute();
         }catch (SQLException e){
             throw new IllegalArgumentException(e);
         }

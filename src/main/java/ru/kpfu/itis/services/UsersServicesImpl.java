@@ -14,9 +14,9 @@ import java.util.UUID;
 
 public class UsersServicesImpl implements UsersService {
 
-    private UsersRepository usersRepository;
+    private final UsersRepository usersRepository;
     private AuthRepository authRepository;
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     public UsersServicesImpl(UsersRepository usersRepository) {
         this.usersRepository = usersRepository;
@@ -29,7 +29,7 @@ public class UsersServicesImpl implements UsersService {
     }
 
     @Override
-    public User register(UserForm userForm) {
+    public void register(UserForm userForm) {
 
         User user = new User();
         user.setFirstName(userForm.getFirstName());
@@ -40,7 +40,7 @@ public class UsersServicesImpl implements UsersService {
 
         user.setPasswordHash(passwordHash);
 
-        return usersRepository.save(user);
+        usersRepository.save(user);
     }
 
     @Override

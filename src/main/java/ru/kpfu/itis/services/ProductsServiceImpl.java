@@ -11,7 +11,7 @@ import java.util.List;
 
 public class ProductsServiceImpl implements ProductsService {
 
-    private ProductsRepository productsRepository;
+    private final ProductsRepository productsRepository;
     private AuthRepository authRepository;
 
     public ProductsServiceImpl(ProductsRepository productsRepository) {
@@ -80,13 +80,13 @@ public class ProductsServiceImpl implements ProductsService {
     @Override
     public void deleteFromBucket(Long userId, Long productId) {
         if(isAlreadyInBucket(userId, productId)){
-            productsRepository.removeFromBucket(userId, productId);
+            productsRepository.deleteFromBucket(userId, productId);
         }
     }
     @Override
     public void deleteFromFavourites(Long userId, Long productId) {
         if(isAlreadyInFavourite(userId, productId)){
-            productsRepository.removeFromFavourites(userId, productId);
+            productsRepository.deleteFromFavourites(userId, productId);
         }
     }
 

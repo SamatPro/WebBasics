@@ -14,6 +14,8 @@ public class ProductsRepositoryImpl implements ProductsRepository {
 
     //language=sql
     private final String INSERT_PRODUCT = "INSERT INTO products(title, cost, description) VALUES (?, ?, ?)";
+    private final String ADD_TO_BUCKET = "INSERT INTO bucket(user_id, product_id) VALUES (?, ?)";
+    private final String ADD_TO_FAVOURITES = "INSERT INTO favourite_products(user_id, product_id) VALUES (?, ?)";
     private final String FIND_FAVOURITE_PRODUCTS_BY_USER_ID = "SELECT * FROM products p INNER JOIN favourite_products f ON p.id = f.product_id INNER JOIN users ON f.user_id=users.id WHERE user_id=?;";
     private final String FIND_PRODUCTS_IN_BUCKET_BY_USER_ID = "SELECT * FROM products p INNER JOIN bucket b ON p.id = b.product_id INNER JOIN users ON b.user_id=users.id WHERE user_id=?;";
     private final String FIND_ALL = "SELECT * FROM products;";
@@ -118,4 +120,28 @@ public class ProductsRepositoryImpl implements ProductsRepository {
         }
         return products;
     });
+
+    @Override
+    public void addToBucket(Long userId, Long productId) {
+        ResultSet resultSet = null;
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(ADD_TO_BUCKET, Statement.RETURN_GENERATED_KEYS);
+            preparedStatement.setLong(1, userId);
+            preparedStatement.setLong(2, productId);
+            resultSet = preparedStatement.executeQuery();
+        } catch (SQLException e) {
+        }
+    }
+
+    @Override
+    public void addToFavourites(Long userId, Long productId) {
+        ResultSet resultSet = null;
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(ADD_TO_FAVOURITES, Statement.RETURN_GENERATED_KEYS);
+            preparedStatement.setLong(1, userId);
+            preparedStatement.setLong(2, productId);
+            resultSet = preparedStatement.executeQuery();
+        } catch (SQLException e) {
+        }
+    }
 }

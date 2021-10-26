@@ -15,7 +15,9 @@
 <p>${user.firstName}</p>
 <p>${user.lastName}</p>
 
-<a href="/products">Продукты</a>
+<a href="${pageContext.request.contextPath}/products">Продукты</a>
+<a href="${pageContext.request.contextPath}/bucket">Корзина</a>
+<a href="${pageContext.request.contextPath}/favourites">Избранное</a>
 
 
 </body>

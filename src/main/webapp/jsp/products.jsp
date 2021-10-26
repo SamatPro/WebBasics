@@ -37,6 +37,16 @@
             <td>
                 <c:out value="${product.description}"/>
             </td>
+            <td>
+                <form action="${pageContext.request.contextPath}/bucket" method="post">
+                    <button type="submit" name="addToBucket" value="${product.id}">Добавить в корзину</button>
+                </form>
+            </td>
+            <td>
+                <form action="${pageContext.request.contextPath}/favourites" method="post">
+                    <button type="submit" name="addToFavourites" value="${product.id}">Добавить в избранное</button>
+                </form>
+            </td>
         </tr>
     </c:forEach>
 

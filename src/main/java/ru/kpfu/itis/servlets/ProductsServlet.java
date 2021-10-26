@@ -3,14 +3,17 @@ package ru.kpfu.itis.servlets;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ru.kpfu.itis.forms.ProductForm;
 import ru.kpfu.itis.models.Product;
+import ru.kpfu.itis.models.User;
 import ru.kpfu.itis.repositories.ProductsRepository;
 import ru.kpfu.itis.repositories.ProductsRepositoryImpl;
 import ru.kpfu.itis.services.ProductsService;
 import ru.kpfu.itis.services.ProductsServiceImpl;
+import ru.kpfu.itis.services.UsersService;
 
 import javax.servlet.ServletException;
 import javax.servlet.UnavailableException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,6 +27,7 @@ import java.util.List;
 public class ProductsServlet extends HttpServlet {
 
     private ProductsService productsService;
+    private UsersService usersService;
 
     private final String URL = "jdbc:postgresql://localhost:5433/test_project";
     private final String USERNAME = "postgres";
@@ -56,6 +60,26 @@ public class ProductsServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");
+
+        Cookie cookies[] = req.getCookies();
+        for (Cookie cookie: cookies) {
+            if (cookie != null) {
+                User user = usersService.findUserByCookieValue(cookie.getValue());
+                if (user != null) {
+                    String addToBucketId = req.getParameter("addToBucket");
+                    if (addToBucketId != null) {
+                        productsService.addToBucket(user.getId(), Long.valueOf(addToBucketId));
+                        req.getRequestDispatcher("/jsp/bucket.jsp").forward(req, resp);
+                    }
+
+                    String addToFavouriteId = req.getParameter("addToFavourites");
+                    if (addToFavouriteId != null) {
+                        productsService.addToFavourites(user.getId(), Long.valueOf(addToFavouriteId));
+                        req.getRequestDispatcher("/jsp/favourites.jsp").forward(req, resp);
+                    }
+                }
+            }
+        }
 
         ObjectMapper objectMapper = new ObjectMapper();
 

@@ -13,4 +13,6 @@ public interface ProductsService {
     void addingToBucket(Long userId, Long productId);
     List<Product> allInBucketById(Long userId);
     List<Product> allInFavouritesById(Long userId);
+    public void removeFromBucket(Long userId, Long productId);
+    public void removeFromFavourites(Long userId, Long productId);
 }

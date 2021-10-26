@@ -10,7 +10,8 @@
 <html>
 <head>
     <title>Products</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"
+            integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
 
 </head>
 <body>
@@ -39,16 +40,15 @@
             </td>
         </tr>
         <td>
-        <form action="/favourites?id=${product.id}" method="post">
-            <button type="submit">Добавить в избранное</button>
-        </form>
+        <td>
+            <button id="addToBucket${product.id}" onclick="addToBucket(${product.id})">Add to Bucket</button>
+        </td>
     </td>
         <td>
-            <form action="/bucket?id=${product.id}" method="post">
-                <button type="submit">Добавить в корзину</button>
-            </form>
+            <button id="addToFavourites${product.id}" onclick="addToFavourites(${product.id})">Add to Favourites</button>
         </td>
     </c:forEach>
+    </table>
 </div>
 
 <div id="form">
@@ -83,6 +83,47 @@
                 }
             })
         }
+
+        function addToBucket(productId) {
+            $.ajax({
+                url: '/products',           /* Куда пойдет запрос */
+                method: 'post',             /* Метод передачи (post или get) */
+                dataType: 'json',          /* Тип данных в ответе (xml, json, script, html). */
+                data: {
+                    bucket_adding: productId
+                },
+                success: bucketSuccess(productId)
+            })
+        }
+
+        function addToFavourites(productId) {
+            $.ajax({
+                url: '/products',           /* Куда пойдет запрос */
+                method: 'post',             /* Метод передачи (post или get) */
+                dataType: 'json',          /* Тип данных в ответе (xml, json, script, html). */
+                data: {
+                    favourite_adding: productId
+                },
+                success: favouriteSuccess(productId)
+            })
+        }
+
+        function bucketSuccess(index) {
+            let id = 'addToBucket' + index
+            let b = document.getElementById(id);
+            b.style.backgroundColor = "green";
+            b.textContent = "In bucket";
+            b.disabled = true;
+        }
+
+        function favouriteSuccess(index) {
+            let id = 'addToFavourites' + index
+            let b = document.getElementById(id);
+            b.style.backgroundColor = "red";
+            b.textContent = "In Favourites";
+            b.disabled = true;
+        }
+
     </script>
 
 

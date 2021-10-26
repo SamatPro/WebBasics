@@ -6,13 +6,10 @@ import ru.kpfu.itis.repositories.AuthRepository;
 import ru.kpfu.itis.repositories.AuthRepostoryImpl;
 import ru.kpfu.itis.repositories.ProductsRepository;
 import ru.kpfu.itis.repositories.ProductsRepositoryImpl;
-import ru.kpfu.itis.services.ProductsService;
-import ru.kpfu.itis.services.ProductsServiceImpl;
 
 import javax.servlet.ServletException;
 import javax.servlet.UnavailableException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,7 +22,6 @@ import java.util.List;
 
 @WebServlet("/favourites")
 public class FavouritesServlet extends HttpServlet {
-    //todo получить список избранных продуктов пользователя и вывести на favourite.jsp
 
     private ProductsRepository productsRepository;
     private AuthRepository authRepository;
@@ -49,6 +45,7 @@ public class FavouritesServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
         Auth auth = authRepository.findByCookieValue(Arrays.stream(req.getCookies()).filter(cookie -> cookie.getName().equals("auth")).findFirst().get().getValue());
         if (auth == null) {
             resp.sendRedirect("/signIn");
@@ -61,10 +58,22 @@ public class FavouritesServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Auth auth = authRepository.findByCookieValue(Arrays.stream(req.getCookies()).filter(cookie -> cookie.getName().equals("auth")).findFirst().get().getValue());
+        Long productId = Long.parseLong(req.getParameter("idToRemove"));
+        Auth auth = authRepository
+                .findByCookieValue(Arrays.stream(req.getCookies())
+                        .filter(cookie -> cookie.getName().equals("auth"))
+                        .findFirst()
+                        .get()
+                        .getValue());
         if (auth == null) {
             resp.sendRedirect("/signIn");
         } else {
+            String isWork = req.getParameter("isWork");
+            if (isWork != null) {
+                productsRepository.removeFromFavourites(auth.getUser().getId(), productId);
+                req.getRequestDispatcher("/jsp/products.jsp").forward(req, resp);
+                return;
+            }
             Long id = Long.parseLong(req.getParameter("id"));
             productsRepository.addProductToFavourite(auth.getUser().getId(), id);
         }

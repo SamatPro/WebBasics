@@ -2,11 +2,13 @@ package ru.kpfu.itis.servlets;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ru.kpfu.itis.forms.ProductForm;
+import ru.kpfu.itis.models.Auth;
 import ru.kpfu.itis.models.Product;
-import ru.kpfu.itis.repositories.ProductsRepository;
-import ru.kpfu.itis.repositories.ProductsRepositoryImpl;
+import ru.kpfu.itis.repositories.*;
 import ru.kpfu.itis.services.ProductsService;
 import ru.kpfu.itis.services.ProductsServiceImpl;
+import ru.kpfu.itis.services.UsersService;
+import ru.kpfu.itis.services.UsersServicesImpl;
 
 import javax.servlet.ServletException;
 import javax.servlet.UnavailableException;
@@ -18,12 +20,14 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 
 @WebServlet("/products")
 public class ProductsServlet extends HttpServlet {
 
     private ProductsService productsService;
+    private AuthRepository authRepository;
 
     private final String URL = "jdbc:postgresql://localhost:5432/test_project";
     private final String USERNAME = "postgres";
@@ -36,6 +40,7 @@ public class ProductsServlet extends HttpServlet {
             Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
 
             ProductsRepository productsRepository = new ProductsRepositoryImpl(connection);
+            authRepository = new AuthRepostoryImpl(connection);
             productsService = new ProductsServiceImpl(productsRepository);
         } catch (SQLException | ClassNotFoundException e) {
             System.out.println("Unavailable");
@@ -45,9 +50,7 @@ public class ProductsServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
         req.setCharacterEncoding("UTF-8");
-
         List<Product> products = productsService.findAll();
         req.setAttribute("products", products);
         req.getRequestDispatcher("/jsp/products.jsp").forward(req, resp);
@@ -57,10 +60,28 @@ public class ProductsServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");
 
+        Auth auth = authRepository.findByCookieValue(Arrays.stream(req.getCookies())
+                .filter(cookie -> cookie.getName().equals("auth"))
+                .findFirst()
+                .get()
+                .getValue());
+        if (auth == null) {
+            resp.sendRedirect("/signIn");
+        } else {
+            String addToBucketId = req.getParameter("bucket_adding");
+            if (addToBucketId != null) {
+                productsService.addingToBucket(auth.getUser().getId(), Long.valueOf(addToBucketId));
+                req.getRequestDispatcher("/jsp/products.jsp").forward(req, resp);
+            }
+
+            String addToFavouriteId = req.getParameter("favourite_adding");
+            if (addToFavouriteId != null) {
+                productsService.addingToFavorite(auth.getUser().getId(), Long.valueOf(addToFavouriteId));
+                req.getRequestDispatcher("/jsp/products.jsp").forward(req, resp);
+            }
+        }
         ObjectMapper objectMapper = new ObjectMapper();
-
         ProductForm productForm = objectMapper.readValue(req.getParameter("product"), ProductForm.class);
-
         productsService.add(productForm);
     }
 

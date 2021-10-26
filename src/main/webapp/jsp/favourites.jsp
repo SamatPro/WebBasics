@@ -10,6 +10,8 @@
 <html>
 <head>
     <title>Favourites</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"
+            integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
 </head>
 <body>
 <div id="favourites">
@@ -35,9 +37,30 @@
                 <td>
                     <c:out value="${product.description}"/>
                 </td>
+                <td>
+                    <button id="remove${product.id}" onclick="removeProductFavourites(${product.id})">Remove</button>
+                </td>
             </tr>
         </c:forEach>
     </table>
 </div>
+
+<script>
+    function removeProductFavourites(productId) {
+        $.ajax({
+            url: '/favourites',
+            method: 'post',
+            dataType: 'json',
+            data: {
+                idToRemove: productId,
+                isWork: "true"
+            },
+            success: function (data) {
+                alert(data);
+            }
+        })
+        location.reload();
+    }
+</script>
 </body>
 </html>

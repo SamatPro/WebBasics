@@ -9,4 +9,6 @@ public interface ProductsRepository extends CrudRepository<Product> {
     List<Product> findProductsInBucketByUserId(Long userId);
     void addProductToFavourite(Long userId, Long productId);
     void addProductToBucket(Long userId, Long productId);
+    public void removeFromBucket(Long userId, Long productId);
+    public void removeFromFavourites(Long userId, Long productId);
 }

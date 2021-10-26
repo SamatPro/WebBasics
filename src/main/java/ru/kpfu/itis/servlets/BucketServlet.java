@@ -61,11 +61,22 @@ public class BucketServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Long productId = Long.parseLong(req.getParameter("id"));
-        Auth auth = authRepository.findByCookieValue(Arrays.stream(req.getCookies()).filter(cookie -> cookie.getName().equals("auth")).findFirst().get().getValue());
+        Long productId = Long.parseLong(req.getParameter("idToRemove"));
+        Auth auth = authRepository.findByCookieValue(Arrays
+                .stream(req.getCookies())
+                .filter(cookie -> cookie.getName().equals("auth"))
+                .findFirst()
+                .get()
+                .getValue());
         if (auth == null) {
             resp.sendRedirect("/signIn");
         } else {
+            String isWork = req.getParameter("isWork");
+            if (isWork != null) {
+                productsService.removeFromBucket(auth.getUser().getId(), productId);
+                req.getRequestDispatcher("/jsp/products.jsp").forward(req, resp);
+                return;
+            }
             productsService.addingToBucket(auth.getUser().getId(), productId);
             resp.sendRedirect("/bucket");
         }

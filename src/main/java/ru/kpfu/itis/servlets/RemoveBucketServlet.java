@@ -1,13 +1,11 @@
 package ru.kpfu.itis.servlets;
 
-import ru.kpfu.itis.models.Auth;
-import ru.kpfu.itis.models.Product;
-import ru.kpfu.itis.repositories.AuthRepository;
-import ru.kpfu.itis.repositories.AuthRepostoryImpl;
-import ru.kpfu.itis.repositories.ProductsRepository;
-import ru.kpfu.itis.repositories.ProductsRepositoryImpl;
+import ru.kpfu.itis.models.User;
+import ru.kpfu.itis.repositories.*;
 import ru.kpfu.itis.services.ProductsService;
 import ru.kpfu.itis.services.ProductsServiceImpl;
+import ru.kpfu.itis.services.UsersService;
+import ru.kpfu.itis.services.UsersServicesImpl;
 
 import javax.servlet.ServletException;
 import javax.servlet.UnavailableException;
@@ -20,14 +18,13 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.List;
 
-@WebServlet("/bucket")
-public class BucketServlet extends HttpServlet {
-    //todo получить список продуктов из корзины пользователя и вывести на bucket.jsp
+@WebServlet("/remove-bucket")
+public class RemoveBucketServlet extends HttpServlet {
 
+
+    private UsersService usersService;
     private ProductsService productsService;
-    private AuthRepository authRepository;
 
     private final String URL = "jdbc:postgresql://localhost:5432/test_project";
     private final String USERNAME = "postgres";
@@ -36,39 +33,27 @@ public class BucketServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Auth auth = null;
-        Cookie[] cookies = req.getCookies();
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equals("auth")) {
-                auth = authRepository.findByCookieValue(cookie.getValue());
-            }
-        }
-        if (auth == null) {
-            resp.sendRedirect("/signIn");
-        } else {
-            List<Product> products = productsService.allInBusketById(auth.getUser().getId());
-
-            req.setAttribute("busket", products);
-            int i = 0;
-            req.getRequestDispatcher("/jsp/bucket.jsp").forward(req, resp);
-        }
+        super.doGet(req, resp);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-       Long productId = Long.parseLong(req.getParameter("id"));
-        Auth auth = null;
-        Cookie[] cookies = req.getCookies();
-        for (Cookie cookie : cookies) {
+
+
+        Cookie cookies[] = req.getCookies();
+
+        for (Cookie cookie: cookies) {
             if (cookie.getName().equals("auth")) {
-                auth = authRepository.findByCookieValue(cookie.getValue());
+                User user = usersService.findUserByCookieValue(cookie.getValue());
+                if (user != null) {
+                    String idToRemove = req.getParameter("idToRemove");
+                    if (idToRemove != null) {
+                        productsService.removeFromBucket(user.getId(), Long.valueOf(idToRemove));
+                        req.getRequestDispatcher("/jsp/products.jsp").forward(req, resp);
+                    }
+                    req.getRequestDispatcher("jsp/products.jsp").forward(req, resp);
+                }
             }
-        }
-        if (auth == null) {
-            resp.sendRedirect("/signIn");
-        } else {
-            productsService.addToBusket(auth.getUser().getId(), productId);
-            resp.sendRedirect("/bucket");
         }
     }
 
@@ -78,9 +63,11 @@ public class BucketServlet extends HttpServlet {
             Class.forName("org.postgresql.Driver");
             Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
 
+            UsersRepository usersRepository = new UsersRepositoryImpl(connection);
+            AuthRepository authRepository = new AuthRepostoryImpl(connection);
+            usersService = new UsersServicesImpl(usersRepository, authRepository);
             ProductsRepository productsRepository = new ProductsRepositoryImpl(connection);
             productsService = new ProductsServiceImpl(productsRepository);
-            authRepository = new AuthRepostoryImpl(connection);
         } catch (SQLException | ClassNotFoundException e) {
             System.out.println("Unavailable");
             throw new UnavailableException("Сайт недоступен!!!");

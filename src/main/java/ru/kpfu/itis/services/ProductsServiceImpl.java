@@ -29,18 +29,28 @@ public class ProductsServiceImpl implements ProductsService {
         return productsRepository.findAll();
     }
 
-    private boolean isInFav(Long userId, Long productId) {
-        return productsRepository.isInFav(userId, productId);
-    }
-
     @Override
     public void addToBucket(Long userId, Long productId) {
         productsRepository.addToBucket(userId, productId);
     }
-
+    @Override
+    public void addToFavourites(Long userId, Long productId) {
+        productsRepository.addToFav(userId, productId);
+    }
     @Override
     public List<Product> user_bucket(Long userId) {
         return productsRepository.findProductsInBucketByUserId(userId);
     }
+    @Override
+    public void removeFromBucket(Long userId, Long idToRemove) {
+        productsRepository.removeFromBucket(userId, idToRemove);
+    }
+
+    @Override
+    public void removeFromFavourites(Long userId, Long idToRemove) {
+        productsRepository.removeFromFavourites(userId, idToRemove);
+    }
+
+
 
 }

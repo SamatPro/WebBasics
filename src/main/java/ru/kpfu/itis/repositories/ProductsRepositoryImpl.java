@@ -19,6 +19,8 @@ public class ProductsRepositoryImpl implements ProductsRepository {
     private final String FIND_ALL = "SELECT * FROM products;";
     private final String INSERT_BUCKET = "INSERT INTO bucket(user_id, product_id) VALUES (?,?)";
     private final String INSERT_FAVOURITE_PRODUCT = "INSERT INTO favourite_products(user_id, product_id) VALUES (?,?)";
+    private final String REMOVE_FROM_BUCKET = "DELETE FROM bucket WHERE user_id = ? AND product_id = ?";
+    private final String REMOVE_FROM_FAVOURITES = "DELETE FROM favourite_products WHERE user_id = ? AND product_id = ?";
 
     public ProductsRepositoryImpl(Connection connection) {
         this.connection = connection;
@@ -113,21 +115,7 @@ public class ProductsRepositoryImpl implements ProductsRepository {
             preparedStatement.setLong(1, userId);
             preparedStatement.setLong(2, productId);
             preparedStatement.execute();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-    }
-
-    @Override
-    public boolean isInFav(Long userId, Long productId) {
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement(FIND_FAVOURITE_PRODUCTS_BY_USER_ID);
-            preparedStatement.setLong(1, userId);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            return resultSet.next();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-            return true;
+        } catch (SQLException e) {
         }
     }
 
@@ -138,8 +126,7 @@ public class ProductsRepositoryImpl implements ProductsRepository {
             preparedStatement.setLong(1, userId);
             preparedStatement.setLong(2, productId);
             preparedStatement.execute();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException e) {
         }
     }
 
@@ -155,4 +142,28 @@ public class ProductsRepositoryImpl implements ProductsRepository {
         }
         return products;
     });
+
+    @Override
+    public void removeFromBucket(Long userId, Long idToRemove) {
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(REMOVE_FROM_BUCKET);
+            preparedStatement.setLong(1, userId);
+            preparedStatement.setLong(2, idToRemove);
+            preparedStatement.execute();
+        } catch (SQLException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    @Override
+    public void removeFromFavourites(Long userId, Long idToRemove) {
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(REMOVE_FROM_FAVOURITES);
+            preparedStatement.setLong(1, userId);
+            preparedStatement.setLong(2, idToRemove);
+            preparedStatement.execute();
+        } catch (SQLException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
 }

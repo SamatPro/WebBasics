@@ -10,7 +10,8 @@
 <html>
 <head>
     <title>Products</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"
+            integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
 
 </head>
 <body>
@@ -18,12 +19,12 @@
 <div id="products">
     <table>
         <tr>
-            <th>ID           </th>
-            <th>Название     </th>
-            <th>Стоимость    </th>
-            <th>Описание     </th>
+            <th>ID</th>
+            <th>Название</th>
+            <th>Стоимость</th>
+            <th>Описание</th>
         </tr>
-    <c:forEach var="product" items="${products}">
+        <c:forEach var="product" items="${products}">
         <tr>
             <td>
                 <c:out value="${product.id}"/>
@@ -38,17 +39,14 @@
                 <c:out value="${product.description}"/>
             </td>
             <td>
-                <form action="/favourites?id=${product.id}" method="post">
-                    <button type="submit">Добавить в избранное</button>
-                </form>
+                <button id="favButton${product.id}" onclick="addToBucket(${product.id})">Добавить в корзину</button>
+
             </td>
             <td>
-                <form action="/bucket?id=${product.id}" method="post">
-                    <button type="submit">Добавить в корзину</button>
-                </form>
+                <button id="bucButton${product.id}" onclick="addToFavourites(${product.id})">Добавить в избранное</button>
             </td>
         </tr>
-    </c:forEach>
+        </c:forEach>
 
 </div>
 
@@ -60,30 +58,83 @@
 </div>
 
 
-    <script>
-        function sendProduct(){
-            let title = document.getElementById('title').value
-            let cost = document.getElementById('cost').value
-            let description = document.getElementById('description').value
+<script>
+    function sendProduct() {
+        let title = document.getElementById('title').value
+        let cost = document.getElementById('cost').value
+        let description = document.getElementById('description').value
 
-            var product = {
-                title: title,
-                cost: cost,
-                description: description
+        const product = {
+            title: title,
+            cost: cost,
+            description: description
+        };
+        $.ajax({
+            url: '/products',           /* Куда пойдет запрос */
+            method: 'post',             /* Метод передачи (post или get) */
+            dataType: 'json',          /* Тип данных в ответе (xml, json, script, html). */
+            data: {
+                product: JSON.stringify(product) /* Параметры передаваемые в запросе. */
+            },
+            success: function (data) {   /* функция которая будет выполнена после успешного запроса.  */
+                alert(data);            /* В переменной data содержится ответ от /products. */
             }
-            $.ajax({
-                url: '/products',           /* Куда пойдет запрос */
-                method: 'post',             /* Метод передачи (post или get) */
-                dataType: 'json',          /* Тип данных в ответе (xml, json, script, html). */
-                data: {
-                    product: JSON.stringify(product) /* Параметры передаваемые в запросе. */
-                },
-                success: function(data){   /* функция которая будет выполнена после успешного запроса.  */
-                    alert(data);            /* В переменной data содержится ответ от /products. */
-                }
-            })
+        })
+    }
+
+    function successBtn(button) {
+        button.style.backgroundColor = 'green';
+        button.disabled = 'true';
+        button.innerText = 'товар добавлен';
+        return true;
+    }
+
+    function isAuthenticated() {
+        var docCookies = document.cookie;
+        var prefix = "auth=";
+        var begin = docCookies.indexOf("; " + prefix);
+        if (begin === -1) {
+            begin = docCookies.indexOf(prefix);
+            if (begin !== 0) return false;
         }
-    </script>
+        return true;
+    }
+
+    function addToBucket(id) {
+        if (!isAuthenticated()) {
+            let button = document.getElementById('bucketButton' + id);
+            button.style.backgroundColor = 'yellow';
+            button.innerText = 'Необходимо войти!';
+            return true;
+        }
+        var url = '/add-bucket?id=' + id;
+        var button = document.getElementById('bucButton' + id);
+        $.ajax({
+            url: url,           /* Куда пойдет запрос */
+            method: 'post',             /* Метод передачи (post или get) */
+            dataType: 'json',          /* Тип данных в ответе (xml, json, script, html). */
+            data: {
+                id: id /* Параметры передаваемые в запросе. */
+            },
+            success: successBtn(button)
+        })
+    }
+
+    function addToFavourites(id) {
+        if (!isAuthenticated()) {
+            let button = document.getElementById('bucButton' + id);
+            button.style.backgroundColor = 'yellow';
+            button.innerText = 'Необходимо войти!';
+            return true;
+        }
+        var url = '/add-favourite?id=' + id;
+        var button = document.getElementById('favButton' + id);
+        $.post(
+            url,
+            successBtn(button)
+        );
+    }
+</script>
 
 
 </body>

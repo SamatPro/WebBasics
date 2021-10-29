@@ -10,18 +10,27 @@
 <html>
 <head>
     <title>Products</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"  integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
 
 </head>
+
+
 <body>
+<form action="${pageContext.request.contextPath}/bucket">
+    <button type="submit">Корзина</button>
+</form>
+<form action="${pageContext.request.contextPath}/favourites">
+    <button type="submit">Избранное</button>
+</form>
+
 
 <div id="products">
     <table>
         <tr>
-            <th>ID           </th>
-            <th>Название     </th>
-            <th>Стоимость    </th>
-            <th>Описание     </th>
+            <th>ID</th>
+            <th>Название</th>
+            <th>Стоимость</th>
+            <th>Описание</th>
         </tr>
     <c:forEach var="product" items="${products}">
         <tr>
@@ -37,6 +46,17 @@
             <td>
                 <c:out value="${product.description}"/>
             </td>
+            <td>
+                <form action="${pageContext.request.contextPath}/products" method="post">
+                    <button type="submit" name="to_bucket" value="${product.id}">В корзину</button>
+                </form>
+            </td>
+            <td>
+                <form action="${pageContext.request.contextPath}/products" method="post">
+                    <button type="submit" name="to_favourite" value="${product.id}">В избранное</button>
+                </form>
+            </td>
+
         </tr>
     </c:forEach>
 
@@ -61,17 +81,19 @@
                 cost: cost,
                 description: description
             }
-            $.ajax({
-                url: '/products',           /* Куда пойдет запрос */
-                method: 'post',             /* Метод передачи (post или get) */
-                dataType: 'json',          /* Тип данных в ответе (xml, json, script, html). */
-                data: {
-                    product: JSON.stringify(product) /* Параметры передаваемые в запросе. */
-                },
-                success: function(data){   /* функция которая будет выполнена после успешного запроса.  */
-                    alert(data);            /* В переменной data содержится ответ от /products. */
-                }
-            })
+
+
+        $.ajax({
+            url: '/products',           /* Куда пойдет запрос */
+            method: 'post',             /* Метод передачи (post или get) */
+            dataType: 'json',          /* Тип данных в ответе (xml, json, script, html). */
+            data: {
+                product: JSON.stringify(product) /* Параметры передаваемые в запросе. */
+            },
+            success: function (data) {   /* функция которая будет выполнена после успешного запроса.  */
+                alert(data);            /* В переменной data содержится ответ от /products. */
+            }
+        })
         }
     </script>
 

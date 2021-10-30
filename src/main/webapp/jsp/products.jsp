@@ -47,14 +47,10 @@
                 <c:out value="${product.description}"/>
             </td>
             <td>
-                <form action="${pageContext.request.contextPath}/products" method="post">
-                    <button type="submit" name="to_bucket" value="${product.id}">В корзину</button>
-                </form>
+                <button id="addToBucket${product.id}" onclick="addToBucket(${product.id})">В корзину</button>
             </td>
             <td>
-                <form action="${pageContext.request.contextPath}/products" method="post">
-                    <button type="submit" name="to_favourite" value="${product.id}">В избранное</button>
-                </form>
+                <button id="addToFavourites${product.id}" onclick="addToFavourites(${product.id})">В избранное</button>
             </td>
 
         </tr>
@@ -94,6 +90,73 @@
                 alert(data);            /* В переменной data содержится ответ от /products. */
             }
         })
+        }
+
+        function isAuthenticated() {
+            var docCookies = document.cookie;
+            var prefix = "auth=";
+            var begin = docCookies.indexOf("; " + prefix);
+            if (begin === -1) {
+                begin = docCookies.indexOf(prefix);
+                if (begin !== 0) return false;
+            }
+            return true;
+        }
+        function addToBucket(productId) {
+            if (!isAuthenticated()) {
+                bucketError(productId)
+                return;
+            }
+            $.ajax({
+                url: '/products',           /* Куда пойдет запрос */
+                method: 'post',             /* Метод передачи (post или get) */
+                dataType: 'json',          /* Тип данных в ответе (xml, json, script, html). */
+                data: {
+                    to_bucket: productId
+                },
+                success: bucketSuccess(productId)
+            })
+        }
+        function addToFavourites(productId) {
+            if (!isAuthenticated()) {
+                favouriteError(productId)
+                return;
+            }
+            $.ajax({
+                url: '/products',           /* Куда пойдет запрос */
+                method: 'post',             /* Метод передачи (post или get) */
+                dataType: 'json',          /* Тип данных в ответе (xml, json, script, html). */
+                data: {
+                    to_favourite: productId
+                },
+                success: favouriteSuccess(productId)
+            })
+        }
+        function bucketSuccess(index) {
+            let id = 'addToBucket' + index
+            let b = document.getElementById(id);
+            b.style.backgroundColor = "lawngreen";
+            b.textContent = "В корзине";
+            b.disabled = true;
+        }
+        function bucketError(index) {
+            let id = 'addToBucket' + index
+            let b = document.getElementById(id);
+            b.style.backgroundColor = "yellow";
+            b.textContent = "Залогиньтесь";
+        }
+        function favouriteSuccess(index) {
+            let id = 'addToFavourites' + index
+            let b = document.getElementById(id);
+            b.style.backgroundColor = "lawngreen";
+            b.textContent = "В избранном";
+            b.disabled = true;
+        }
+        function favouriteError(index) {
+            let id = 'addToFavourites' + index
+            let b = document.getElementById(id);
+            b.style.backgroundColor = "yellow";
+            b.textContent = "Залогиньтесь";
         }
     </script>
 

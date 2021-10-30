@@ -19,6 +19,9 @@ public class ProductsRepositoryImpl implements ProductsRepository {
     private final String FIND_ALL = "SELECT * FROM products;";
     private final String ADD_TO_BUCKET = "INSERT INTO bucket(user_id, product_id) VALUES (?, ?)";
     private final String ADD_TO_FAVOURITES = "INSERT INTO favourite_products(user_id, product_id) VALUES (?, ?)";
+    private final String REMOVE_FROM_BUCKET = "DELETE FROM bucket WHERE user_id = ? AND product_id = ?";
+    private final String REMOVE_FROM_FAVOURITES = "DELETE FROM favourite_products WHERE user_id = ? AND product_id = ?";
+
     public ProductsRepositoryImpl(Connection connection) {
         this.connection = connection;
     }
@@ -124,6 +127,30 @@ public class ProductsRepositoryImpl implements ProductsRepository {
         ResultSet resultSet = null;
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(ADD_TO_FAVOURITES, Statement.RETURN_GENERATED_KEYS);
+            preparedStatement.setLong(1, userId);
+            preparedStatement.setLong(2, productId);
+            resultSet = preparedStatement.executeQuery();
+        } catch (SQLException e) {
+        }
+    }
+
+    @Override
+    public void removeFromBucket(Long userId, Long productId) {
+        ResultSet resultSet = null;
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(REMOVE_FROM_BUCKET, Statement.RETURN_GENERATED_KEYS);
+            preparedStatement.setLong(1, userId);
+            preparedStatement.setLong(2, productId);
+            resultSet = preparedStatement.executeQuery();
+        } catch (SQLException e) {
+        }
+    }
+
+    @Override
+    public void removeFromFavourites(Long userId, Long productId) {
+        ResultSet resultSet = null;
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(REMOVE_FROM_FAVOURITES, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setLong(1, userId);
             preparedStatement.setLong(2, productId);
             resultSet = preparedStatement.executeQuery();

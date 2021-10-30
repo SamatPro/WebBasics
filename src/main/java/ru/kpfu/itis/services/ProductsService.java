@@ -9,6 +9,9 @@ public interface ProductsService {
     void add(ProductForm productForm);
     List<Product> findAll();
 
+    public void removeFromBucket(Long userId, Long productId);
+    public void removeFromFavourites(Long userId, Long productId);
+
     public void addToBucket(Long userId, Long productId);
     public void addToFavourites(Long userId, Long productId);
     List<Product> findFavouriteProductsByUserId(Long userId);

@@ -20,7 +20,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.List;
 
-@WebServlet("/products")
+
 public class ProductsServlet extends HttpServlet {
 
     private ProductsService productsService;
